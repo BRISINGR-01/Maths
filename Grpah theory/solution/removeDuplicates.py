@@ -1,3 +1,4 @@
+# sort branches for comparisson
 def sorter(branch):
   if type(branch) == int:
     return 0  
@@ -7,6 +8,16 @@ def sorter(branch):
     return len(branch) * 2
 
 def get_branches(checked_tree):
+  # divide a tree into branches
+  # ex: [3,0,2,1,0,0,1,0] ->
+  # [
+    # [0]
+    # [
+    #   [1,0]
+    #   [0]
+    # ]
+    # [1,0]
+  # ]
   tree = checked_tree.copy()
   branches = []
 
@@ -18,9 +29,10 @@ def get_branches(checked_tree):
         return branches
     else:
       last_leaf_index = branch_index
-      for branch in range(amount_of_branches):
+      for _ in range(amount_of_branches):
         depth = 1
         beginning = last_leaf_index + 1
+        # divide tree into branches: [2,1,0,1,1,0] -> [1,0] and [1,1,0]
         for i, deg in enumerate(tree[beginning:]):
           if deg == 0: 
             depth -= 1
@@ -29,11 +41,14 @@ def get_branches(checked_tree):
               break
           else: depth += deg - 1
 
+        # if branch has subbranches
         branches.append(get_branches(tree[beginning: last_leaf_index + 1]))
       
       return sorted(branches, key=sorter)
 
 def remove_duplicate_trees(trees):
+  # when generating trees it happens that the same tree is generated multiple times
+  # by swapping around the branches
   unique_branches = []
 
   def check_for_duplicate(checked_tree):

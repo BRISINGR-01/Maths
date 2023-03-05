@@ -4,11 +4,6 @@ from drawing import graph_from_degrees
 from generate_trees import generate_all_trees
 from removeDuplicates import remove_duplicate_trees
 
-# must finish in as many zeros as the last non-zero number
-# [...,1,0,0] - wrong (duplicate)
-# [...,3,0,0] - wrong (duplicate)
-# [...,2,0,0] - correct
-
 n = None
 try:
   n = int(sys.argv[1])

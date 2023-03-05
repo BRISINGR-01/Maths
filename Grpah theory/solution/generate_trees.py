@@ -1,4 +1,9 @@
 def check_tree(tree, n):
+  # tree must finish in as many zeros as the last non-zero number
+  # [...,1,0,0] - wrong (duplicate)
+  # [...,3,0,0] - wrong (duplicate)
+  # [...,2,0,0] - correct
+
   if tree[0] == 0: return False # first vertex must have branches
   if len(tree) == n:
     if sum(tree) + 1 != n: return False # degrees must add up
@@ -22,6 +27,9 @@ def check_tree(tree, n):
   return True
 
 def generate(nr_of_vertices, tree):
+  # for every branch generate every branch
+  # in reality it generates every possible combination of degrees (deg-1)
+  # and then filters the valid ones
   if nr_of_vertices == len(tree): return tree
   
   new_trees = []
@@ -31,6 +39,7 @@ def generate(nr_of_vertices, tree):
   return [generate(nr_of_vertices, tree) for tree in new_trees if check_tree(tree, nr_of_vertices)]
 
 def flatten(parent_list):
+  # the generated trees are nestaed lists
   if type(parent_list) is list:
     return [child for child_list in parent_list for child in flatten(child_list)] 
   else: 

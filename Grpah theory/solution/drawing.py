@@ -19,8 +19,10 @@ def graph_from_degrees(degrees):
   tree = nx.Graph()
 
   while sum(degrees) != 0:
-    if degrees[i] == 0:
+    if degrees[i] == 0: # leaf
       if degrees[i - 1] == 0:
+        # [...,0,0...]
+        #   i-1^ ^i
         i -= 1
         continue
       degrees[i - 1] -= 1

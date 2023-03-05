@@ -1,0 +1,36 @@
+Problem: Draw every rooted tree with an `n` amount of vertices
+
+(unsuccessful ideas/graphs.py)
+I initially tried to build an algorithm which would create every tree by starting from the depth, the depth of the branches, amount of branches.., but this seemed to grow too complicated. I even built a complex system to display the trees on one page, evenly distributed and with even weights (default is to throw them randomly on the canvas).
+
+(unsuccessful ideas/adjacent matrices (5).py)
+I thought about finding a pattern of a sort among the adjacency matrices, but the consistency, even though it was there, was complicated and unefficient. I made a function though, which I can use to see if there are repeated trees - to remove duplicates. Unfortunately the directed nature of said matrices allowed for duplicates (same trees with swapped branches).
+
+(unsuccessful ideas/prufer.py)
+Next step was to research the matter on the internet a bit more for inspiration. I came upon a denotion of sort for trees - Prüfer sequence. I gave it a try, but I ran into a similar problem - Two different trees would result in the same sequence. But it gave an idea.
+
+(solution/generate_trees.py)
+I could make my variation of the Prüfer sequence which would be unique. I made a similar version which ended up being a list of the degrees, but minus one: [3,2,1,2,1] -> [2,1,0,1,0]. Using the zeroes to denote a leaf was easier to compute and visualize. I then made a function to create every possible combination of those sequences and in the same time checked if they are valid.
+
+(solution/removeDuplicates.py)
+I still had to check for dupllicates so I divided the sequence into the branches and ordered those for comparision.
+ex: [3,0,2,1,0,0,1,0] ->
+[
+  [0]
+  [
+    [1,0]
+    [0]
+  ]
+  [1,0]
+]`
+
+I put everything in a Github repository, so you can take a look if you want: https://github.com/BRISINGR-01/Maths
+You can test it using `python ./solution/rootedTrees.py 5`. This would print all the sequences. If you want to see the trees visualized: `python ./solution/rootedTrees.py 5 -v`
+You would need python and networkX installed. 
+You can also test it using the `compare.sh` script. There are 3 handmade lists of sequences for comparission - 5.py, 6.py, 7.py
+I used VS code's compare function to test it - `python ./solution/rootedTrees.py 6 > output.py; code -d 6.py output.py`
+
+resources:
+https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence#Algorithm_to_convert_a_Pr%C3%BCfer_sequence_into_a_tree
+https://math.stackexchange.com/questions/3394260/how-to-generate-all-unique-acyclic-graphs-trees-given-n-nodes#:~:text=The%20basic%20approach%20to%20generating%20unrooted%20trees%20is%20to%20generate%20rooted%20trees%20and%20then%20apply%20the%20theorem%20that%20every%20tree%20has%20either%20a%20centre%20or%20a%20bicentre.
+https://networkx.org/

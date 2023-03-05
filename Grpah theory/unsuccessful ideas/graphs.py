@@ -14,11 +14,12 @@ def get_from_vertex(v,n): return int(re.findall(r'\d+',v)[n])
 def get_total_vertices():
   number_of_total_vertices = None
 
-  if len(sys.argv) == 1: return DEFAULT_VERTICES
+  if len(sys.argv) == 1:
+    return DEFAULT_VERTICES
 
   try:
     number_of_total_vertices = int(sys.argv[1])
-  except:
+  except ValueError:
     print("Please enter a valid number")
     return None
 
@@ -41,7 +42,10 @@ class Graph:
 
   def add_tree(self):
     new_edges = self.base_edges + self.extra_edges
-    renamed_edges = [[format_vertex(v, self.total_trees) for v in edge] for edge in new_edges] # seperate tree from graph (make it unique)
+    renamed_edges = [[
+      format_vertex(v, self.total_trees) for v in edge] for edge in new_edges
+    ]
+    # seperate tree from graph (make it unique)
     self.extra_edges = []
     self.edges += renamed_edges
     self.total_trees += 1
@@ -58,7 +62,9 @@ class Graph:
     self.base_vertices = [format_vertex(self.vertices[0], 0)]
     self.base_edges = []
     for n in range(1, depth_level + 1):
-      self.base_edges.append([format_vertex(self.vertices[n - 1], n-1), format_vertex(self.vertices[n], n)])
+      self.base_edges.append(
+        [format_vertex(self.vertices[n - 1], n-1), format_vertex(self.vertices[n], n)]
+      )
       self.base_vertices.append(format_vertex(self.vertices[n], n))
   
     self.extra_vertices = self.vertices[len(self.base_vertices):]
@@ -78,7 +84,8 @@ class Graph:
         # to distinguish the root
         node_color.append("blue")
         current_tree = vertices[i:i + self.n]
-      else: node_color.append("green")
+      else:
+        node_color.append("green")
 
       vertex_index = get_from_vertex(v, 0)
       depth_level = get_from_vertex(v, 1)
@@ -106,7 +113,8 @@ class Graph:
 def get_graphs():
   # get the number of vertices (run script with the number as an argument, ex: python {file}.py 4)
   n = get_total_vertices()
-  if n == None: return
+  if n is None:
+    return
 
   graph = Graph(n)
   a = 1

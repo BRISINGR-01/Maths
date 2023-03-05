@@ -1,11 +1,11 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def draw_grph(grpah):
-  colours = ["lightblue" for _ in grpah.nodes]
+def draw_graph(graph):
+  colours = ["lightblue" for _ in graph.nodes]
   colours[0] = "green" # root
 
-  nx.draw_networkx(grpah, node_color=colours)
+  nx.draw_networkx(graph, node_color=colours)
   plt.show()
 
 def graph_from_degrees(degrees):
@@ -27,8 +27,10 @@ def graph_from_degrees(degrees):
         continue
       degrees[i - 1] -= 1
       degrees.pop(i)
-      if i >= len(degrees): i = len(degrees) - 1
-      if len(branch_points_stack) != 0: current_vertex = branch_points_stack.pop()
+      if i >= len(degrees):
+        i = len(degrees) - 1
+      if len(branch_points_stack) != 0:
+        current_vertex = branch_points_stack.pop()
     else:
       other_vertex = next_vertex
 

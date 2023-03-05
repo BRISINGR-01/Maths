@@ -32,7 +32,7 @@ def get_branches(checked_tree):
       for _ in range(amount_of_branches):
         depth = 1
         beginning = last_leaf_index + 1
-        # divide tree into branches: [2,1,0,1,1,0] -> [1,0] and [1,1,0]
+        # divide tree into branches: [2,1,0,1,1,0 [1,0] and [1,1,0]
         for i, deg in enumerate(tree[beginning:]):
           if deg == 0: 
             depth -= 1

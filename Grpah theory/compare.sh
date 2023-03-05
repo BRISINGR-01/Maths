@@ -1,0 +1,1 @@
+python ./solution/degree.py 5 > output.py; code -d 5.py output.py 

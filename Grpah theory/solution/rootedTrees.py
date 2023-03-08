@@ -8,11 +8,11 @@ n = None
 show = False
 try:
   n = int(sys.argv[1])
-except ValueError:
+except Exception:
   n = 5
 try:
   show = sys.argv[2] == "-v"
-except IndexError:
+except Exception:
   show = False
 
 trees = remove_duplicate_trees(generate_all_trees(n))

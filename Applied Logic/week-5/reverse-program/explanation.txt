@@ -1,0 +1,16 @@
+The whole program can be presented as an array of steps - in this case 10.
+The output of every step defines the next until the end and since the last step's result is known,
+we can iterate using the current and next step instead of the current and the previous step. The reason foor that is,
+that when we reach step 9 and the nextt is 10 we already have the answer so there is no need to advance furhter.
+If the initial value was known, perhaps the opposite approach would be more adequate.
+
+Once that the flow and the end result are established, the rest becomes more like a translation from pseudo code
+to smt. At every step is decided what values the next one shall hold and so on until the last step with the 
+pre-established values is reached.
+
+output:
+sat
+(
+  ((Step A 1) 16)
+  ((Step B 1) 148)
+)

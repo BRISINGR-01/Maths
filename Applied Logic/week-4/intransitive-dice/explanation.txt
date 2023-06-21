@@ -1,0 +1,10 @@
+Usually dices have six sides with the numbers from 1 to six, but the dices from this problem can have repeating
+values. In one of the examples on wikipedia it can even contain 0.
+
+The problem states that:
+`for each die in the set, there is another die that rolls a higher number than it more than half the time.`
+
+This can be easiestly represented cyclically: A > B, B > C,..., (last dice) > A
+In order for a dice to have a bigger number more than half of the time, this has to happen more times that the half
+of the amount of sides (3). So for every pair of sides of two consequetive dices (ex: B and C) there have to be at 
+four sides from the first dice that are bigger than the respective side on other dice. 

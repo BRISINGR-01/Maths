@@ -1,0 +1,13 @@
+Every medicine has a number and is either tested or not every round.
+Therefore for every  number per test round there is a boolean saying if the medicine has been tested M(num round) -> hasBeenTested
+
+
+1) For every round from 1 to 10 there must be 3 tests.
+2) Every Medicine must be tested 5 times.
+
+For the first two rules there is simply an iteration through all medicines or all rounds and taking the sum of the tests run for 
+all instances and comparing that to 3 or 5 respectively. 
+ 
+3) Pairs of medicine
+This rule ca be interpreted as follows:
+The sum of the combinations of medicines that have been tested together must be 2

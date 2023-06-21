@@ -1,0 +1,12 @@
+The solution aims to depict the steps taken between the first (8 0 0) and the last (4 4 0) pouring.
+That's why those are set as constrains of the step's flow.
+
+Every step is defined by the jar and the round and contains the amount of water contained in that jar
+during the round. 
+
+The values are always between 0 and the maximum of each jar. The sum of the water of 
+the jars should always be equal to 8 since no water is neither gained nor lost.
+
+Since at every step the water fomr one jar is pored into another, there is always one jar whose contents
+remain the same and therefore we can say that for every time a jar stays the same, one of the other two
+gets emptied or filled. 

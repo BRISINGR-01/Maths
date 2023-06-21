@@ -1,0 +1,16 @@
+An alphametic puzzle (also sometimes known as a cryptarithm) is a type of puzzle where words are put together into an arithmetic formula such that digits can be substituted for the letters to make the formula true. Here are two examples, the first being one of the simplest and the second being probably the best known alphametic puzzle:
+
+    I       S E N D
++ B B     + M O R E
+-----     ---------
+I L L     M O N E Y
+In the first, I = 1, B = 9, and L = 0.
+
+There are two rules that must be followed for solutions:
+
+The leftmost letter can't be zero in any word.
+There must be a one-to-one mapping between letters and digits. In other words, if you choose the digit 6 for the letter M, then all of the M's in the puzzle must be 6 and no other letter can be a 6.
+
+ex:
+AS + I + WAS + WITH = MOSES (2)
+CORAL + CYAN + MAROON + NAVY + SALMON = COLORS (5)

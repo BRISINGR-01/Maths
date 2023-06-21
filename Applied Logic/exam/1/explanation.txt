@@ -1,0 +1,13 @@
+All the numbers on the inner wheel must have an equal counterpart on the outer wheel, since in every rotation
+at least one number is the same. Therefore the numbers on the inner wheel must be different integers between 1 and 5.
+
+At least on side should have equal numbers =>
+n => 1
+Where `n` is the amount of the coincedenting numbers.
+
+This has to be applied for every possible rotation. Since there are 5 sides, the wheel can be rotated 5 times.
+
+Each rotaion can be represented as the sequence of numbers starting from the number after the previous starting 
+point before the rotation.
+ex: `1 2 3 4 5` is the initial state. After rotaion it would be `2 3 4 5 1`, then `3 4 5 1 2`, and so on until the
+initial state is achieved.

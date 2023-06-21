@@ -1,0 +1,19 @@
+a)
+A 2x2 matrix and its inverse contain 9 elements in total:
+  the elements of the matrix - A, B, C, D
+  the elements of the inverse - IA, IB, IC, ID
+  and the descriminant - DI
+
+The formula for the descriminant is: DI = A*D - B*C
+
+ It is needed to find the inverse. The formula for the inverse is the following:
+
+  IA = D / DI
+  IB = -B / DI
+  IC = -C / DI
+  ID = A / DI
+
+Therefore if DI is 0 an inverse doesn't exist, since it is not possible to divide by 0.
+
+b)
+The same rules apply, but the elements of the inverse matrix must be in the following range: [-9, 9]

@@ -1,0 +1,47 @@
+A chess board is a 8x8 grid so the positions of the queens can be notated as:
+QR(n) (the row of queen number n)
+QC(n) (the column of queen number n)
+
+For every two queens there are the following rules:
+They cannot be on the same row
+They cannot be on the same column
+They cannot be on the same diagonal
+
+For the row and column it is simmple - QR and QC must be different.
+
+The diagonals have two directions - top to bottom (*1) and bottom to top (*2).
+
+1)
+In order for two queens to be in the same diagonal they need to have the same ratio of row to column.
+But if we look at the grid as a plane and the rows as the x-axis and the columns as the y-axis, we see that 
+all points on a line represented by `y = x + n` lie on a diagonal. To check if they lie on such a line, we can simply 
+compare the differences of the x and y coordinates respectively. 
+
+ex: Q1 (3,4); Q2 (7,8); Q3 (1,6)
+The difference of the rows between Q1 and Q2 is 4 and so is the difference betweeen the columns, therefore it lies on `y = x + 4`
+and therefore the two queens lie on the same diagonal.
+Q1 - Q3 produces x: 2 and y: -2 which is not the `y = x + n` and therefore doesn't lien on a diagonal
+
+2)
+In order for two queens to be in the same diagonal they need to be equally away from the begining point (0,0).
+Since we are working with numbers in the range of [1, 8] there is no need for the usual formula and instead 
+can be used something way simpler - the sum of the x and y of each queen.
+
+ex: Q1 (3,4); Q2 (7,8); Q3 (1,6)
+Q1x + Q1y = 7
+Q2x + Q2y = 15
+Q3x + Q3y = 7
+
+As you can see the distance between (0,0) and Q1 and between (0,0) and Q3 is the same, therefore they lie on the same diagonal.
+Q2 is further away and is therefore not on the same diagonal as the other two.
+
+__1__2__3__4__5__6__7__8__
+1|  |  |  |  |  |  |  |  |
+2|  |  |  |  |  |  |  |  |
+3|  |  |  |  |  |  |  |  |
+4|  |  |Q1|  |  |  |  |  |
+5|  |--|  |--|  |  |  |  |
+6|Q3|  |  |  |--|  |  |  |
+7|  |  |  |  |  |--|  |  |
+8|  |  |  |  |  |  |Q2|  |
+¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯

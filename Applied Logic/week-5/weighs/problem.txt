@@ -1,0 +1,1 @@
+Let Z3 solve the following puzzle: You have a balance scale with four weights. With these four weights you must balance any whole number load from 1kg all the way up to 40kg. How much should each of the four weights weigh? (You may place weights on both sides of the scale.)

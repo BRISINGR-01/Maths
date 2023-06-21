@@ -1,0 +1,12 @@
+We play the following one-person game: We have arranged 40 people in a circle. 
+The people are numbered from 1 to 40, and they are arranged in that order 
+(hence person 40 is between person 39 and person 1).
+
+At the start we give a flag to person 1. Then they perform the following process: 1 tells 2 to leave the circle 
+and hands over the flag to 3, who tells 4 to leave and hands over the flag to 5, etc. When the circle is completed,
+this process continues, skipping the people who have already left (we assume all people obey the request to leave
+when it’s given to them). That is: everyone with the flag asks ‘the next one that’s still left over’ to leave and
+then hands over the flag to ‘the next one after that’. This process continues until there’s only one person
+left over.
+
+Let Z3 determine (the number of) that last person.

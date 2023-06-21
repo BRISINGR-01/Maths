@@ -1,0 +1,69 @@
+Since we are working with scales they must all be a positive integer.
+
+  (assert (< 0 A))
+  (assert (< 0 B))
+  (assert (< 0 C))
+  (assert (< 0 D))
+
+For every weight there needs to be a solution
+
+(assert
+  (forall ((w Int))
+    ...
+  )
+)
+
+And every solution can be a combination of load and weights on the two sides of the balance where each sides
+has at least one weight/load. Not all weights are required to be present and some can be on the side of the load.
+
+One way to represent this is as the load being equal to the sum of all weights, where each weight is multiplied 
+by either 1,0 or -1 which represents the placement of the weight. Which means that if the weight is multiplied by `0`
+it is ignored, if multiplied by `1` it is on the other side of the load and if it is `-1` - it is next to the load. 
+Of course at least one weight has to be a `1` so that there is something on both ends, because the load can't be less
+that 1 and no weights can be a negative number.
+
+
+(implies
+  (<= 1 w 40)
+  (exists ((a Int) (b Int) (c Int) (d Int))
+    (and
+      (<= -1 a 1)
+      (<= -1 b 1)
+      (<= -1 c 1)
+      (<= -1 d 1)
+      (or (= a 1) (= b 1) (= c 1) (= d 1))
+      (= 
+        (+ 
+          (* A a) 
+          (* B b) 
+          (* C c) 
+          (* D d)
+        ) 
+        w
+      )
+    )
+  )
+)
+
+Unfortunately, perhaps due to bugs in smt, this code doesn't work.
+
+Another option is to check for every possible combination of load and weights manually. 
+
+(or
+  (= (+ A B C D) w)
+  (= (+ A B C) (+ w D))
+  (= (+ A B D) (+ w C))
+  ...
+  (= (+ C D) (+ w A B))
+  ...
+  (= A (+ w B C D))
+  ...
+)
+
+The output is:
+
+sat
+((A 9)
+ (B 1)
+ (C 27)
+ (D 3))

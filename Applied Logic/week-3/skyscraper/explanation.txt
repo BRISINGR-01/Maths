@@ -1,0 +1,27 @@
+1) The grid
+  I divided the grid into rows and columns. Each skyscraper is represented by a variable. 
+  The coordinates of that variable are represented by a letter (column) and number (row) 
+
+  ex: 4x4
+  A1 B1 C1 D1
+  A2 B2 C2 D2
+  A3 B3 C3 D3
+  A4 B4 C4 D4
+
+
+2) Declare the rules:
+  all variables int the same row and in the same column are distinct
+  all variables are between 1 and the amount of rows/columns
+
+3) Solution
+  I split the problem into the smallest repeated unit possible - a number and n skyscrapers in a particulaar order.
+  That function would be called n*4 times with each number and the coresponding combination of variables.
+  Firstly, what does this number even mean? The amount of skyscrapers that can be seen or in other words -
+  how many skyscrapers are not covered by a taller one. Since that will always exclude the first one, from the 
+  provided number should be taken away 1 => n - 1 is the new target. n - 1 represents the amount of times a taller 
+  building is revealed behind a lower one, thus can be logically represented with "<". Since it is an amount it will 
+  be the sum of the times "<" is true. It is not as simple as comparing every skyscraper with the following one since
+  it could still yield true even if the 2 skyscrapers which satisfy this can be hidden behind a taller one.
+  That is why the function compares the tallest skyscraper so far with the next one. It takes the maximum of all 
+  previous numbers and compares with the next. If the maximum is less than the next, then add one to the sum.
+  Do this n times for each side.

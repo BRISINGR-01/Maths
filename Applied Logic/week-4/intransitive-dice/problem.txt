@@ -1,0 +1,12 @@
+A set of dice is intransitive (or nontransitive) if it contains three dice, A, B, and C, with the property that A rolls higher than B more than half the time, and B rolls higher than C more than half the time, but it is not true that A rolls higher than C more than half the time. In other words, a set of dice is intransitive if the binary relation – X rolls a higher number than Y more than half the time – on its elements is not transitive. More simply, A normally beats B, B normally beats C, but A does not normally beat C.
+
+It is possible to find sets of dice with the even stronger property that, for each die in the set, there is another die that rolls a higher number than it more than half the time. This is different in that instead of only "A does not normally beat C" it is now "C normally beats A". Using such a set of dice, one can invent games which are biased in ways that people unused to intransitive dice might not expect (see Example).[1][2][3][4]
+
+Example
+
+An example of intransitive dice (opposite sides have the same value as those shown).
+Consider the following set of dice.
+
+Die A has sides 2, 2, 4, 4, 9, 9.
+Die B has sides 1, 1, 6, 6, 8, 8.
+Die C has sides 3, 3, 5, 5, 7, 7.

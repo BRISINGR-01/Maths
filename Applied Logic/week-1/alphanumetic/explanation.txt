@@ -1,0 +1,10 @@
+1) All letters are declared as seperate variables
+2) The rules are applied as follows:
+  - The first letter of a word cannot be a 0 since it is the first digit of a number
+  - The letters contain a value between 0 and 9 (or 1 to 9 as we know from 1)*)
+  - all letters must have a distinct value
+
+3) The puzzle is basically an equation of adding a few numbers and getting another. 
+Therefore if we add together all the letters of the added words with account of their decimal position,
+that should equal the sum of the letters of the result.
+ex: AS + A = MOM => 10 * A + S + A = 100 * M + 10 * O + M

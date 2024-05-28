@@ -1,11 +1,12 @@
 class LinkedList : public DataStructure
 {
 public:
-  LinkedList *child;
+  LinkedList *child = nullptr;
   LinkedList();
   LinkedList(string val);
   ~LinkedList();
 
-  LinkedList *add(string val);
-  LinkedList *find(string val);
+  virtual void add(string val);
+  virtual LinkedList *find(string val);
+  virtual void fill(string fileName);
 };

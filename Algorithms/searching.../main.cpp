@@ -2,54 +2,48 @@
 #include "bst.h"
 #include "linkedList.h"
 #include "readFile.h"
+#include <bits/stdc++.h>
 
-int count(string word, DataStructure *list);
-
-int main(int argc, char *argv[])
+DataStructure *getDataStructure(string type)
 {
-  string word = "";
-  if (argc == 1)
+  if (type.compare("binary") == 0)
   {
-    word = "iure";
+    return new BST();
+  }
+  else if (type.compare("linear") == 0)
+  {
+    return new LinkedList();
   }
   else
   {
-    word = argv[1];
+    cout << "Wrong 'type' - possible types are 'binary' or 'linear'" << endl;
+    exit(1);
   }
-
-  cout << word << endl;
-
-  BST *bst = new BST();
-  LinkedList *linkedList = new LinkedList();
-
-  // ReadFile *stream = new ReadFile("text.txt");
-
-  // string val = " ";
-  // while (stream->next(val))
-  // {
-  //   bst->add(val);
-  //   linkedList->add(val);
-  // }
-
-  run_tests();
-  // cout << count(word, linkedList) << endl;
-
-  return 0;
 }
 
-int count(string word, DataStructure *dt)
+int main(int argc, char *argv[])
 {
-  int count = 0;
-
-  while (1)
+  if (strcmp(argv[1], "test") == 0)
   {
-    dt = dt->find(word);
+    runTests();
+  }
+  else if (strcmp(argv[1], "-h") == 0)
+  {
+    cout << "Usage:" << endl;
+    cout << "searcher -h: display this" << endl;
+    cout << "searcher test: run tests" << endl;
+    cout << "searcher <type> <file> <word>: run the algorithm against a file (type can be 'binary' or 'linear')" << endl;
+  }
+  else
+  {
+    DataStructure *dt = getDataStructure(argv[1]);
+    string file = argv[2];
+    string word = argv[3];
 
-    if (dt == nullptr)
-      break;
+    dt->fill(file);
 
-    count++;
+    displayMetrics(dt, word);
   }
 
-  return count;
+  return 0;
 }

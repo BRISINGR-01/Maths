@@ -1,20 +1,20 @@
 class BST : public DataStructure
 {
-
-public:
-  BST();
-  BST(string value);
-
-  BST *leftChild;
-  BST *rightChild;
-  void add(string val);
-  BST *find(string val);
-
-  void remove(string val);
-
-  void display(int indent = 0);
-
 private:
   bool hasLeftChild();
   bool hasRightChild();
+
+public:
+  BST *leftChild = nullptr;
+  BST *rightChild = nullptr;
+
+  BST();
+  BST(string value);
+  virtual ~BST();
+
+  virtual void add(string val);
+  virtual BST *find(string val);
+  virtual void fill(string fileName);
+  void remove(string val);
+  void display(int indent = 0);
 };

@@ -1,5 +1,6 @@
 #include "algorithm.h"
 #include "linkedList.h"
+#include "readFile.h"
 
 LinkedList::LinkedList()
 {
@@ -11,12 +12,15 @@ LinkedList::LinkedList(string val)
   value = val;
 }
 
-LinkedList *LinkedList::add(string val)
+void LinkedList::add(string val)
 {
   if (child == nullptr)
-    return child = new LinkedList(val);
+  {
+    child = new LinkedList(val);
+    return;
+  }
 
-  return child->add(val);
+  child->add(val);
 }
 
 LinkedList *LinkedList::find(string val)
@@ -30,7 +34,30 @@ LinkedList *LinkedList::find(string val)
   return child->find(val);
 }
 
+void LinkedList::fill(string fileName)
+{
+  ReadFile *stream = new ReadFile(fileName);
+
+  string val = " ";
+  int count = 0;
+  add("");
+  LinkedList *tail = this->child;
+  while (stream->next(val))
+  {
+    count += 1;
+    if (count == 200000)
+    {
+      cout << "Too many" << endl;
+      break;
+    }
+    tail->add(val);
+    tail = tail->child;
+  }
+
+  cout << count << endl;
+}
+
 LinkedList::~LinkedList()
 {
-  cout << "remove: " << value << endl;
+  delete child;
 }

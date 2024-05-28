@@ -1,4 +1,5 @@
 #include "algorithm.h"
+#include "readFile.h"
 #include "bst.h"
 
 BST::BST()
@@ -32,6 +33,7 @@ void BST::add(string val)
 
     return rightChild->add(val);
   }
+  cout << 10 << endl;
 }
 
 BST *BST::find(string val)
@@ -41,7 +43,7 @@ BST *BST::find(string val)
     if (!hasLeftChild())
       return nullptr;
 
-    if (this->leftChild->value.compare(val))
+    if (compare(this->leftChild->value, val) == 0)
       return this->leftChild;
 
     return this->leftChild->find(val);
@@ -51,7 +53,7 @@ BST *BST::find(string val)
     if (!hasRightChild())
       return nullptr;
 
-    if (this->rightChild->value.compare(val))
+    if (compare(this->rightChild->value, val) == 0)
       return this->rightChild;
 
     return this->rightChild->find(val);
@@ -124,6 +126,17 @@ void BST::remove(string val)
   this->value = value;
 }
 
+void BST::fill(string fileName)
+{
+  ReadFile *stream = new ReadFile(fileName);
+
+  string word = " ";
+  while (stream->next(word))
+  {
+    add(word);
+  }
+}
+
 void BST::display(int indent)
 {
   string indentStr = "";
@@ -143,26 +156,16 @@ void BST::display(int indent)
   {
     cout << indentStr << value << endl;
   }
-  cout << indentStr << "Left:";
   if (hasLeftChild())
   {
-    cout << endl;
+    cout << indentStr << "Left:" << endl;
     leftChild->display(indent + 1);
   }
-  else
-  {
-    cout << "-" << endl;
-  }
 
-  cout << indentStr << "Right:";
   if (hasRightChild())
   {
-    cout << endl;
+    cout << indentStr << "Right:" << endl;
     rightChild->display(indent + 1);
-  }
-  else
-  {
-    cout << "-" << endl;
   }
 }
 
@@ -174,4 +177,10 @@ bool BST::hasLeftChild()
 bool BST::hasRightChild()
 {
   return rightChild != nullptr;
+}
+
+BST::~BST()
+{
+  delete rightChild;
+  delete leftChild;
 }

@@ -1,19 +1,22 @@
 #include "algorithm.h"
 #include "readFile.h"
+#include <filesystem>
 
 ReadFile::ReadFile(string fileName)
 {
-  fileStream.open(fileName, ios::in);
-
-  if (!fileStream)
+  if (!filesystem::exists(fileName))
   {
-    throw "No such file";
+    cout << "No such file" << endl;
+    exit(1);
   }
+
+  fileStream.open(fileName, ios::in);
 }
 
 ReadFile::~ReadFile()
 {
-  cout << "die fstraem" << endl;
+  if (fileStream.is_open())
+    fileStream.close();
 }
 
 int ReadFile::next(string &output)

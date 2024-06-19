@@ -3,3 +3,6 @@ __pycache__/
 **/build
 **/.antlr
 Session.vim
+**/antlr_generated
+**/out
+antlr-4.13.1-complete.jar

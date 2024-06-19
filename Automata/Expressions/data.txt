@@ -1,0 +1,19 @@
+val := 121
+write val;
+val2 := val + 1
+write val2;
+val2 := val - 10
+write val2;
+val2 := val * 3
+write val2;
+val2 := val / 11
+write val2;
+val2 := val ^ 6
+write val2;
+
+ds := 0
+write ds;
+
+
+var321312 := 32 + 891
+write var321312;

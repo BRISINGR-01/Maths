@@ -1,6 +1,6 @@
 grammar String;
 
-sentence : name 'is' age EOF ;
+program : name 'is' age EOF ;
 name : firstName lastName ;
 
 age : NUMBER ;

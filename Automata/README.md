@@ -1,8 +1,4 @@
 # Running
 
-```
-antlr4 <name>.g4 -o build
-cd build
-javac <name>*.java
-grun <name> <rule> -gui
-```
+use any of the commands from the root folder Automata
+as a param use the name of the folder

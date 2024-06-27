@@ -1,6 +1,8 @@
 grammar Webpage;
 
-htmlDocument: htmlDoctype element* ;
+htmlDocument: htmlDoctype (element | comment)* ;
+
+comment: '<!-' .+? '->';
 
 element: (startTag content* CLOSE_TAG) | elementWithSelfCloseTag ;
 

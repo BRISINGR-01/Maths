@@ -1,6 +1,9 @@
 import java.io.File;
 
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import antlr_generated.WebpageLexer;
 import antlr_generated.WebpageParser;
@@ -19,7 +22,7 @@ public class Main {
                 input = CharStreams.fromStream(System.in);
             }
         }
-
+        
         // Create a lexer that feeds off of input CharStream
         WebpageLexer lexer = new WebpageLexer(input);
 

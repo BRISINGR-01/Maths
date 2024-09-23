@@ -1,4 +1,4 @@
-if (0) { write "true"; } else {
+if (1) { write "true"; } else {
   write "false";
 }
 

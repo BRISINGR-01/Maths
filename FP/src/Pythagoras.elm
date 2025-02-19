@@ -1,11 +1,8 @@
 module Pythagoras exposing (run, InputType)
-import Array exposing (Array)
-
-
 
 isTriple: Int -> Int -> Int -> Bool
 isTriple a b c =
-  (sqr a) + (sqr b) == (sqr c)
+  sqr a + sqr b == sqr c
 
 sqr: Int -> Int
 sqr a =
@@ -17,7 +14,6 @@ isNValid n =
    False
   else 
     True
-
 
 leg1 : Int -> Int -> Int
 leg1 a b =
@@ -36,7 +32,11 @@ leg2 a b =
 
 hyp : Int -> Int -> Int
 hyp a b =
-  (sqr a) + (sqr b)
+  let res = sqrt (toFloat (sqr a + sqr b)) in
+  if toFloat (round res) == res then
+    round res
+  else
+    -1
 
 pythTriple : (Int, Int) -> (Int, Int, Int)
 pythTriple d =
@@ -49,8 +49,9 @@ pythTriple d =
 
 
 -- isTriple
------------------
+---------------
 -- type alias InputType = { a: Int , b: Int, c: Int }
+-- run : InputType -> String
 -- run input =
 --     if not (isNValid input.a && isNValid input.b && isNValid input.c) then
 --       "Bad input"
@@ -62,17 +63,21 @@ pythTriple d =
 -- leg1/2
 -----------------
 -- type alias InputType = { a: Int , b: Int }
+-- run : InputType -> String
 -- run input =
 --     if not (isNValid input.a && isNValid input.b) then
 --       "Bad input"
 --     else 
---       String.fromInt (leg1 input.a input.b)
+--       String.fromInt (hyp input.a input.b)
 
 type alias InputType = { a: Int , b: Int }
 run : InputType -> String
 run input =
-    if not (isNValid input.a && isNValid input.b) then
+    if input.a < input.b || not (isNValid input.a && isNValid input.b) then
       "Bad input"
-    else 
-      String.fromInt (leg1 input.a input.b)
+    else
+      let 
+        res = leg1 input.a input.b
+      in
+        String.fromInt res
     

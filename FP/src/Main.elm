@@ -1,12 +1,20 @@
 port module Main exposing (..)
-import Pythagoras exposing (run, InputType) 
+
+-- import Pythagoras2 exposing (InputType, run)
+-- import N exposing (InputType, run)
+
+import Ceasar2 exposing (InputType, run)
 import Platform.Cmd exposing (Cmd)
 import Platform.Sub exposing (Sub)
 
 
-type alias OutputType = String
+type alias OutputType =
+    String
+
 
 port get : (InputType -> msg) -> Sub msg
+
+
 port put : OutputType -> Cmd msg
 
 
@@ -18,25 +26,31 @@ main =
         , subscriptions = subscriptions
         }
 
-type alias Model = ()
-type Msg = Input InputType
-type alias Flags = ()
+
+type alias Model =
+    ()
+
+
+type Msg
+    = Input InputType
+
+
+type alias Flags =
+    ()
+
 
 init : Flags -> ( Model, Cmd Msg )
 init _ =
     ( (), Cmd.none )
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Input input -> ( model, put (run input))
+        Input input ->
+            ( model, put (run input) )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     get Input
-
-{- Below is the input-to-output transformation.
-   It could be anything.  Here we have something
-   simple for demonstration purposes.
--}

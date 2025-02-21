@@ -9,7 +9,7 @@ import Bounds exposing (boundsList)
 
 encode : Int -> String -> String
 encode offset str =
-    userReplace "[a-zA-Zа-яА-Я]+" (.match >> String.map (shiftChar offset)) str
+    userReplace "[a-zA-Zа-яА-ЯΑ-Ωα-ω]+" (.match >> String.map (shiftChar offset)) str
 
 encodeRec : Int -> Int -> String -> String
 encodeRec i offset str =
@@ -37,7 +37,7 @@ shiftChar offset c =
     case findBounds c of
         Nothing -> c
         Just bounds ->
-            let sum = Char.toCode c + (offset |> remainderBy bounds.total) in
+            let sum = Char.toCode c + (offset |> remainderBy (bounds.thisEnd - bounds.thisStart)) in
             Char.fromCode <| 
             if sum < bounds.thisStart then
                 sum - bounds.thisStart + bounds.otherEnd + 1
@@ -90,7 +90,7 @@ run : InputType -> String
 run input =
     let n = input.offset in
     -- normalize input.val
-    encodeRec 0 n input.val
-    -- encode n input.val
+    -- encodeRec 0 n input.val
+    encode n input.val
     -- decode n input.val
     -- decode n (encode n input.val)

@@ -2,49 +2,42 @@ module Bounds exposing (..)
 
 -- Constants
 
-bgUpStart: Int
-bgUpStart =
+cyrilicUpStart: Int
+cyrilicUpStart =
     Char.toCode 'А'
 
-
-bgUpEnd: Int
-bgUpEnd =
+cyrilicUpEnd: Int
+cyrilicUpEnd =
     Char.toCode 'Я'
 
-
-bgLowStart: Int
-bgLowStart =
+cyrilicLowStart: Int
+cyrilicLowStart =
     Char.toCode 'а'
 
-
-bgLowEnd: Int
-bgLowEnd =
+cyrilicLowEnd: Int
+cyrilicLowEnd =
     Char.toCode 'я'
 
-bgCount: Int
-bgCount = 31
 
-upStart: Int
-upStart =
+latinUpStart: Int
+latinUpStart =
     Char.toCode 'A'
 
 
-upEnd: Int
-upEnd =
+latinUpEnd: Int
+latinUpEnd =
     Char.toCode 'Z'
 
 
-lowStart: Int
-lowStart =
+latinLowStart: Int
+latinLowStart =
     Char.toCode 'a'
 
 
-lowEnd: Int
-lowEnd =
+latinLowEnd: Int
+latinLowEnd =
     Char.toCode 'z'
 
-latinCount: Int
-latinCount = 26
 
 greekUpStart: Int
 greekUpStart =
@@ -62,55 +55,48 @@ greekLowEnd: Int
 greekLowEnd =
     Char.toCode 'ω'  -- Unicode 969
 
-greekCount: Int
-greekCount = 24
 
 type alias Bounds =
     { thisStart: Int
     , thisEnd: Int
     , otherStart: Int
     , otherEnd: Int
-    , total: Int
     }
 
 
 latinLowerBounds : Bounds
 latinLowerBounds =
-    { thisStart = lowStart
-    , thisEnd = lowEnd
-    , otherStart = upStart
-    , otherEnd = upEnd
-    , total = latinCount
+    { thisStart = latinLowStart
+    , thisEnd = latinLowEnd
+    , otherStart = latinUpStart
+    , otherEnd = latinUpEnd
     }
 
 
 latinUpperBounds : Bounds
 latinUpperBounds =
-    { thisStart = upStart
-    , thisEnd = upEnd
-    , otherStart = lowStart
-    , otherEnd = lowEnd
-    , total = latinCount
+    { thisStart = latinUpStart
+    , thisEnd = latinUpEnd
+    , otherStart = latinLowStart
+    , otherEnd = latinLowEnd
     }
 
 
-bgLowerBounds : Bounds
-bgLowerBounds =
-    { thisStart = bgLowStart
-    , thisEnd = bgLowEnd
-    , otherStart = bgUpStart
-    , otherEnd = bgUpEnd
-    , total = bgCount
+cyrilicLowerBounds : Bounds
+cyrilicLowerBounds =
+    { thisStart = cyrilicLowStart
+    , thisEnd = cyrilicLowEnd
+    , otherStart = cyrilicUpStart
+    , otherEnd = cyrilicUpEnd
     }
 
 
-bgUpperBounds : Bounds
-bgUpperBounds =
-    { thisStart = bgUpStart
-    , thisEnd = bgUpEnd
-    , otherStart = bgLowStart
-    , otherEnd = bgLowEnd
-    , total = bgCount
+cyrilicUpperBounds : Bounds
+cyrilicUpperBounds =
+    { thisStart = cyrilicUpStart
+    , thisEnd = cyrilicUpEnd
+    , otherStart = cyrilicLowStart
+    , otherEnd = cyrilicLowEnd
     }
 
 
@@ -120,7 +106,6 @@ greekLowerBounds =
     , thisEnd = greekLowEnd
     , otherStart = greekUpStart
     , otherEnd = greekUpEnd
-    , total = greekCount
     }
 
 
@@ -129,10 +114,9 @@ greekUpperBounds =
     { thisStart = greekUpStart
     , thisEnd = greekUpEnd
     , otherStart = greekLowStart
-    , total = greekCount
     , otherEnd = greekLowEnd
     }
 
 
 boundsList: List Bounds
-boundsList = [latinLowerBounds, latinUpperBounds, bgLowerBounds, bgUpperBounds, greekLowerBounds, greekUpperBounds ]
+boundsList = [latinLowerBounds, latinUpperBounds, cyrilicLowerBounds, cyrilicUpperBounds, greekLowerBounds, greekUpperBounds ]

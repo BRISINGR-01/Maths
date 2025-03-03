@@ -2356,107 +2356,6 @@ function _Platform_mergeExportsDebug(moduleName, obj, exports)
 			: (obj[name] = exports[name]);
 	}
 }
-
-
-// CREATE
-
-var _Regex_never = /.^/;
-
-var _Regex_fromStringWith = F2(function(options, string)
-{
-	var flags = 'g';
-	if (options.multiline) { flags += 'm'; }
-	if (options.caseInsensitive) { flags += 'i'; }
-
-	try
-	{
-		return $elm$core$Maybe$Just(new RegExp(string, flags));
-	}
-	catch(error)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-});
-
-
-// USE
-
-var _Regex_contains = F2(function(re, string)
-{
-	return string.match(re) !== null;
-});
-
-
-var _Regex_findAtMost = F3(function(n, re, str)
-{
-	var out = [];
-	var number = 0;
-	var string = str;
-	var lastIndex = re.lastIndex;
-	var prevLastIndex = -1;
-	var result;
-	while (number++ < n && (result = re.exec(string)))
-	{
-		if (prevLastIndex == re.lastIndex) break;
-		var i = result.length - 1;
-		var subs = new Array(i);
-		while (i > 0)
-		{
-			var submatch = result[i];
-			subs[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
-		prevLastIndex = re.lastIndex;
-	}
-	re.lastIndex = lastIndex;
-	return _List_fromArray(out);
-});
-
-
-var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
-{
-	var count = 0;
-	function jsReplacer(match)
-	{
-		if (count++ >= n)
-		{
-			return match;
-		}
-		var i = arguments.length - 3;
-		var submatches = new Array(i);
-		while (i > 0)
-		{
-			var submatch = arguments[i];
-			submatches[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
-	}
-	return string.replace(re, jsReplacer);
-});
-
-var _Regex_splitAtMost = F3(function(n, re, str)
-{
-	var string = str;
-	var out = [];
-	var start = re.lastIndex;
-	var restoreLastIndex = re.lastIndex;
-	while (n--)
-	{
-		var result = re.exec(string);
-		if (!result) break;
-		out.push(string.slice(start, result.index));
-		start = re.lastIndex;
-	}
-	out.push(string.slice(start));
-	re.lastIndex = restoreLastIndex;
-	return _List_fromArray(out);
-});
-
-var _Regex_infinity = Infinity;
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
@@ -2943,68 +2842,52 @@ var $elm$core$Basics$identity = function (x) {
 var $author$project$Main$Input = function (a) {
 	return {$: 'Input', a: a};
 };
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$json$Json$Decode$succeed = _Json_succeed;
-var $author$project$Main$get = _Platform_incomingPort(
-	'get',
-	A2(
-		$elm$json$Json$Decode$andThen,
-		function (val) {
-			return A2(
-				$elm$json$Json$Decode$andThen,
-				function (offset) {
-					return $elm$json$Json$Decode$succeed(
-						{offset: offset, val: val});
-				},
-				A2($elm$json$Json$Decode$field, 'offset', $elm$json$Json$Decode$int));
-		},
-		A2($elm$json$Json$Decode$field, 'val', $elm$json$Json$Decode$string)));
+var $author$project$Main$get = _Platform_incomingPort('get', $elm$json$Json$Decode$string);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $author$project$Main$get($author$project$Main$Input);
 };
+var $elm$json$Json$Decode$succeed = _Json_succeed;
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$put = _Platform_outgoingPort('put', $elm$json$Json$Encode$string);
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
+var $elm$core$String$isEmpty = function (string) {
+	return string === '';
+};
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
 		return g(
 			f(x));
 	});
-var $elm$core$String$map = _String_map;
-var $author$project$Bounds$bgLowEnd = $elm$core$Char$toCode(
-	_Utils_chr('я'));
-var $author$project$Bounds$bgLowStart = $elm$core$Char$toCode(
-	_Utils_chr('а'));
-var $author$project$Bounds$bgUpEnd = $elm$core$Char$toCode(
-	_Utils_chr('Я'));
-var $author$project$Bounds$bgUpStart = $elm$core$Char$toCode(
-	_Utils_chr('А'));
-var $author$project$Bounds$bgLowerBounds = {otherEnd: $author$project$Bounds$bgUpEnd, otherStart: $author$project$Bounds$bgUpStart, thisEnd: $author$project$Bounds$bgLowEnd, thisStart: $author$project$Bounds$bgLowStart};
-var $author$project$Bounds$bgUpperBounds = {otherEnd: $author$project$Bounds$bgLowEnd, otherStart: $author$project$Bounds$bgLowStart, thisEnd: $author$project$Bounds$bgUpEnd, thisStart: $author$project$Bounds$bgUpStart};
-var $author$project$Bounds$greekLowEnd = $elm$core$Char$toCode(
-	_Utils_chr('ω'));
-var $author$project$Bounds$greekLowStart = $elm$core$Char$toCode(
-	_Utils_chr('α'));
-var $author$project$Bounds$greekUpEnd = $elm$core$Char$toCode(
-	_Utils_chr('Ω'));
-var $author$project$Bounds$greekUpStart = $elm$core$Char$toCode(
-	_Utils_chr('Α'));
-var $author$project$Bounds$greekLowerBounds = {otherEnd: $author$project$Bounds$greekUpEnd, otherStart: $author$project$Bounds$greekUpStart, thisEnd: $author$project$Bounds$greekLowEnd, thisStart: $author$project$Bounds$greekLowStart};
-var $author$project$Bounds$greekUpperBounds = {otherEnd: $author$project$Bounds$greekLowEnd, otherStart: $author$project$Bounds$greekLowStart, thisEnd: $author$project$Bounds$greekUpEnd, thisStart: $author$project$Bounds$greekUpStart};
-var $author$project$Bounds$lowEnd = $elm$core$Char$toCode(
-	_Utils_chr('z'));
-var $author$project$Bounds$lowStart = $elm$core$Char$toCode(
-	_Utils_chr('a'));
-var $author$project$Bounds$upEnd = $elm$core$Char$toCode(
-	_Utils_chr('Z'));
-var $author$project$Bounds$upStart = $elm$core$Char$toCode(
-	_Utils_chr('A'));
-var $author$project$Bounds$latinLowerBounds = {otherEnd: $author$project$Bounds$upEnd, otherStart: $author$project$Bounds$upStart, thisEnd: $author$project$Bounds$lowEnd, thisStart: $author$project$Bounds$lowStart};
-var $author$project$Bounds$latinUpperBounds = {otherEnd: $author$project$Bounds$lowEnd, otherStart: $author$project$Bounds$lowStart, thisEnd: $author$project$Bounds$upEnd, thisStart: $author$project$Bounds$upStart};
-var $author$project$Bounds$boundsList = _List_fromArray(
-	[$author$project$Bounds$latinLowerBounds, $author$project$Bounds$latinUpperBounds, $author$project$Bounds$bgLowerBounds, $author$project$Bounds$bgUpperBounds, $author$project$Bounds$greekLowerBounds, $author$project$Bounds$greekUpperBounds]);
+var $elm$core$Basics$not = _Basics_not;
+var $elm$core$List$all = F2(
+	function (isOkay, list) {
+		return !A2(
+			$elm$core$List$any,
+			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
+			list);
+	});
+var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -3060,6 +2943,90 @@ var $elm$core$List$foldr = F3(
 	function (fn, acc, ls) {
 		return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
 	});
+var $elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						$elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$String$toInt = _String_toInt;
+var $author$project$CreditCards$toIntList = function (list) {
+	return A2(
+		$elm$core$List$map,
+		function (c) {
+			var _v0 = $elm$core$String$toInt(c);
+			if (_v0.$ === 'Nothing') {
+				return -1;
+			} else {
+				var x = _v0.a;
+				return x;
+			}
+		},
+		A2($elm$core$String$split, '', list));
+};
+var $author$project$CreditCards$isInputValid = function (num) {
+	return A2(
+		$elm$core$List$all,
+		function (n) {
+			return n >= 0;
+		},
+		$author$project$CreditCards$toIntList(num));
+};
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $elm$core$List$tail = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(xs);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$CreditCards$calcCheckSum = function (list) {
+	var head = function () {
+		var _v1 = $elm$core$List$head(list);
+		if (_v1.$ === 'Nothing') {
+			return 0;
+		} else {
+			var n = _v1.a;
+			return n;
+		}
+	}();
+	var _v0 = $elm$core$List$tail(list);
+	if (_v0.$ === 'Nothing') {
+		return '';
+	} else {
+		var rest = _v0.a;
+		return (A2(
+			$elm$core$Basics$modBy,
+			2,
+			$elm$core$List$length(list)) === 1) ? _Utils_ap(
+			$elm$core$String$fromInt(head * 2),
+			$author$project$CreditCards$calcCheckSum(rest)) : _Utils_ap(
+			$elm$core$String$fromInt(head),
+			$author$project$CreditCards$calcCheckSum(rest));
+	}
+};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -3071,78 +3038,47 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$List$head = function (list) {
-	if (list.b) {
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $author$project$CreditCards$reverse = function (list) {
+	if (!list.b) {
+		return _List_Nil;
+	} else {
 		var x = list.a;
 		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
+		return A2(
+			$elm$core$List$append,
+			$author$project$CreditCards$reverse(xs),
+			_List_fromArray(
+				[x]));
 	}
 };
-var $author$project$Ceasar2$findBounds = function (c) {
-	var ci = $elm$core$Char$toCode(c);
-	return $elm$core$List$head(
-		A2(
-			$elm$core$List$filter,
-			function (bounds) {
-				return (_Utils_cmp(ci, bounds.thisStart) > -1) && (_Utils_cmp(ci, bounds.thisEnd) < 1);
-			},
-			$author$project$Bounds$boundsList));
+var $author$project$CreditCards$isValid = function (num) {
+	return !A2(
+		$elm$core$Basics$modBy,
+		10,
+		A3(
+			$elm$core$List$foldl,
+			$elm$core$Basics$add,
+			0,
+			$author$project$CreditCards$toIntList(
+				$author$project$CreditCards$calcCheckSum(
+					A2(
+						$elm$core$List$filter,
+						function (n) {
+							return n >= 0;
+						},
+						$author$project$CreditCards$reverse(
+							$author$project$CreditCards$toIntList(num)))))));
 };
-var $elm$core$Char$fromCode = _Char_fromCode;
-var $author$project$Ceasar2$shiftChar = F2(
-	function (offset, c) {
-		var _v0 = $author$project$Ceasar2$findBounds(c);
-		if (_v0.$ === 'Nothing') {
-			return c;
-		} else {
-			var bounds = _v0.a;
-			var sum = $elm$core$Char$toCode(c) + (offset % (bounds.thisEnd - bounds.thisStart));
-			return $elm$core$Char$fromCode(
-				(_Utils_cmp(sum, bounds.thisStart) < 0) ? (((sum - bounds.thisStart) + bounds.otherEnd) + 1) : ((_Utils_cmp(sum, bounds.thisEnd) < 1) ? sum : (((sum - bounds.thisEnd) + bounds.otherStart) - 1)));
-		}
-	});
-var $elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var $elm$regex$Regex$fromString = function (string) {
-	return A2(
-		$elm$regex$Regex$fromStringWith,
-		{caseInsensitive: false, multiline: false},
-		string);
-};
-var $elm$regex$Regex$replace = _Regex_replaceAtMost(_Regex_infinity);
-var $author$project$Ceasar2$userReplace = F3(
-	function (userRegex, replacer, string) {
-		var _v0 = $elm$regex$Regex$fromString(userRegex);
-		if (_v0.$ === 'Nothing') {
-			return string;
-		} else {
-			var regex = _v0.a;
-			return A3($elm$regex$Regex$replace, regex, replacer, string);
-		}
-	});
-var $author$project$Ceasar2$encode = F2(
-	function (offset, str) {
-		return A3(
-			$author$project$Ceasar2$userReplace,
-			'[a-zA-Zа-яА-ЯΑ-Ωα-ω]+',
-			A2(
-				$elm$core$Basics$composeR,
-				function ($) {
-					return $.match;
-				},
-				$elm$core$String$map(
-					$author$project$Ceasar2$shiftChar(offset))),
-			str);
-	});
-var $author$project$Ceasar2$run = function (input) {
-	var n = input.offset;
-	return A2($author$project$Ceasar2$encode, n, input.val);
+var $author$project$CreditCards$run = function (input) {
+	return $elm$core$String$isEmpty(input) ? 'Empty input' : ((!$author$project$CreditCards$isInputValid(input)) ? 'Bad input' : ($author$project$CreditCards$isValid(input) ? 'Correct' : 'Invalid'));
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
@@ -3150,7 +3086,7 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(
 			model,
 			$author$project$Main$put(
-				$author$project$Ceasar2$run(input)));
+				$author$project$CreditCards$run(input)));
 	});
 var $elm$core$Platform$worker = _Platform_worker;
 var $author$project$Main$main = $elm$core$Platform$worker(

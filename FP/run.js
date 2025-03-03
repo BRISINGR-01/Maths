@@ -16,11 +16,11 @@ console.log(args);
 // main.ports.get.send(parseInt(args[0]));
 
 // Ceasar
-console.log("\n   Input: ", args[0], ",", args.slice(1).join(" "));
-main.ports.get.send({
-	offset: parseInt(args[0]),
-	val: args.slice(1).join(" "),
-});
+// console.log("\n   Input: ", args[0], ",", args.slice(1).join(" "));
+// main.ports.get.send({
+// 	offset: parseInt(args[0]),
+// 	val: args.slice(1).join(" "),
+// });
 
 // console.log("\n   Input: ", args.join(", "));
 // main.ports.get.send({
@@ -28,5 +28,9 @@ main.ports.get.send({
 // 	b: parseInt(args[1]),
 // 	c: parseInt(args[2]),
 // });
+
+// Credit cards
+console.log("\n   Input: ", args[0]);
+main.ports.get.send(args[0]);
 
 main.ports.put.subscribe((data) => console.log("   Output: " + JSON.stringify(data) + "\n"));

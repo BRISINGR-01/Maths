@@ -1,6 +1,5 @@
 module Ceasar2 exposing (InputType, run)
 
-import Html exposing (a)
 import Regex
 import Bounds exposing (Bounds)
 import Bounds exposing (boundsList)
@@ -11,24 +10,25 @@ encode : Int -> String -> String
 encode offset str =
     userReplace "[a-zA-Zа-яА-ЯΑ-Ωα-ω]+" (.match >> String.map (shiftChar offset)) str
 
-encodeRec : Int -> Int -> String -> String
-encodeRec i offset str =
-    let
-        len = String.length str
-        nextI = i + 1
-        encoder = String.join "" >> encodeRec nextI offset
-        tail = String.slice nextI len str
-        ch = case at nextI <| String.toList str of
-                Nothing -> ' '
-                Just a -> a
-        nextChar = shiftChar offset ch |> String.fromChar
-    in
+encrypt : Int -> Int -> String -> String
+encrypt i offset str =
+    let len = String.length str in
     if i < 0 || i >= len then
         str
-    else if i == 0 then
-        [ nextChar, tail ] |> encoder
     else
-        [ String.slice 0 i str, nextChar, tail ] |> encoder
+        let  
+            nextI = i + 1
+            encoder = String.join "" >> encrypt nextI offset
+            tail = String.slice nextI len str
+            ch = case at nextI <| String.toList str of
+                    Nothing -> ' '
+                    Just a -> a
+            nextChar = shiftChar offset ch |> String.fromChar
+        in
+        if i == 0 then
+            [ nextChar, tail ] |> encoder
+        else
+             encoder ([ String.slice 0 i str, nextChar, tail ])
 
 -- Utils
 
@@ -48,13 +48,10 @@ shiftChar offset c =
 
 findBounds : Char -> Maybe Bounds
 findBounds c =
-    let 
-        ci = Char.toCode c 
-    in
-        List.head 
-            <| List.filter 
-                (\bounds -> ci >= bounds.thisStart && ci <= bounds.thisEnd) 
-                boundsList
+    let ci = Char.toCode c in
+        List.head <| List.filter 
+            (\bounds -> ci >= bounds.thisStart && ci <= bounds.thisEnd) 
+            boundsList
 
 -- General Utils
 
@@ -77,7 +74,7 @@ at i list =
 
 decode : Int -> String -> String
 decode offset c =
-    encode (offset * -1) c
+    encode -offset c
 
 normalize : String -> String
 normalize s =
@@ -90,7 +87,7 @@ run : InputType -> String
 run input =
     let n = input.offset in
     -- normalize input.val
-    -- encodeRec 0 n input.val
-    encode n input.val
+    encrypt 0 n input.val
+    -- encode n input.val
     -- decode n input.val
     -- decode n (encode n input.val)

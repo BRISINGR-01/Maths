@@ -6,6 +6,7 @@ Session.vim
 **/antlr_generated
 **/out
 antlr-4.13.1-complete.jar
+FP/main.js
 datasets
 elm-stuff
 node_modules

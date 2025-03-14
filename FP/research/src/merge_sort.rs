@@ -1,4 +1,4 @@
-pub fn merge_sort<T: Ord + Copy>(list: Vec<T>) -> Vec<T> {
+```pub fn merge_sort<T: Ord + Copy>(list: Vec<T>) -> Vec<T> {
     match list.as_slice() {
         [_] => list,
         list => merge(
@@ -26,3 +26,4 @@ fn merge<'a, T: Ord + Copy>(left: Vec<T>, right: Vec<T>) -> Vec<T> {
 fn combine<T: Ord + Clone>(left: Vec<T>, right: Vec<T>) -> Vec<T> {
     left.iter().chain(right.iter()).cloned().collect()
 }
+```

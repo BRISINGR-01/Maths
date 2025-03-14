@@ -2,8 +2,10 @@ port module Main exposing (..)
 
 -- import Pythagoras2 exposing (InputType, run)
 -- import N exposing (InputType, run)
+-- import CreditCards exposing (InputType, run)
+-- import MergeSort exposing (InputType, run)
 
-import CreditCards exposing (InputType, run)
+import Math exposing (InputType, run)
 import Platform.Cmd exposing (Cmd)
 import Platform.Sub exposing (Sub)
 

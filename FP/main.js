@@ -2842,243 +2842,113 @@ var $elm$core$Basics$identity = function (x) {
 var $author$project$Main$Input = function (a) {
 	return {$: 'Input', a: a};
 };
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$Main$get = _Platform_incomingPort('get', $elm$json$Json$Decode$string);
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $author$project$Main$get = _Platform_incomingPort('get', $elm$json$Json$Decode$float);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $author$project$Main$get($author$project$Main$Input);
 };
 var $elm$json$Json$Decode$succeed = _Json_succeed;
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$put = _Platform_outgoingPort('put', $elm$json$Json$Encode$string);
-var $elm$core$String$isEmpty = function (string) {
-	return string === '';
+var $author$project$Math$Const = function (a) {
+	return {$: 'Const', a: a};
 };
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
+var $author$project$Math$Div = F2(
+	function (a, b) {
+		return {$: 'Div', a: a, b: b};
+	});
+var $author$project$Math$Minus = F2(
+	function (a, b) {
+		return {$: 'Minus', a: a, b: b};
+	});
+var $author$project$Math$Mult = F2(
+	function (a, b) {
+		return {$: 'Mult', a: a, b: b};
+	});
+var $author$project$Math$Plus = F2(
+	function (a, b) {
+		return {$: 'Plus', a: a, b: b};
+	});
+var $author$project$Math$Poly = F2(
+	function (a, b) {
+		return {$: 'Poly', a: a, b: b};
+	});
+var $author$project$Math$X = {$: 'X'};
+var $elm$core$Basics$pow = _Basics_pow;
+var $author$project$Math$eval = F2(
+	function (x, f) {
+		switch (f.$) {
+			case 'X':
+				return x;
+			case 'Const':
+				var val = f.a;
+				return val;
+			case 'Minus':
+				var l = f.a;
+				var r = f.b;
+				return A2($author$project$Math$eval, x, l) - A2($author$project$Math$eval, x, r);
+			case 'Plus':
+				var l = f.a;
+				var r = f.b;
+				return A2($author$project$Math$eval, x, l) + A2($author$project$Math$eval, x, r);
+			case 'Mult':
+				var l = f.a;
+				var r = f.b;
+				return A2($author$project$Math$eval, x, l) * A2($author$project$Math$eval, x, r);
+			case 'Div':
+				var l = f.a;
+				var r = f.b;
+				return A2($author$project$Math$eval, x, l) / A2($author$project$Math$eval, x, r);
+			default:
+				var fx = f.a;
+				var i = f.b;
+				return A2(
+					$elm$core$Basics$pow,
+					A2($author$project$Math$eval, x, fx),
+					i);
 		}
 	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$Basics$not = _Basics_not;
-var $elm$core$List$all = F2(
-	function (isOkay, list) {
-		return !A2(
-			$elm$core$List$any,
-			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
-			list);
-	});
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							$elm$core$List$foldl,
-							fn,
-							acc,
-							$elm$core$List$reverse(r4)) : A4($elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var $elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
-var $elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						$elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $elm$core$String$toInt = _String_toInt;
-var $author$project$CreditCards$toIntList = function (list) {
-	return A2(
-		$elm$core$List$map,
-		function (c) {
-			var _v0 = $elm$core$String$toInt(c);
-			if (_v0.$ === 'Nothing') {
-				return -1;
-			} else {
-				var x = _v0.a;
-				return x;
-			}
-		},
-		A2($elm$core$String$split, '', list));
-};
-var $author$project$CreditCards$isInputValid = function (num) {
-	return A2(
-		$elm$core$List$all,
-		function (n) {
-			return n >= 0;
-		},
-		$author$project$CreditCards$toIntList(num));
-};
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $elm$core$List$tail = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(xs);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$CreditCards$calcCheckSum = function (list) {
-	var head = function () {
-		var _v1 = $elm$core$List$head(list);
-		if (_v1.$ === 'Nothing') {
-			return 0;
-		} else {
-			var n = _v1.a;
-			return n;
-		}
-	}();
-	var _v0 = $elm$core$List$tail(list);
-	if (_v0.$ === 'Nothing') {
-		return '';
-	} else {
-		var rest = _v0.a;
-		return (A2(
-			$elm$core$Basics$modBy,
-			2,
-			$elm$core$List$length(list)) === 1) ? _Utils_ap(
-			$elm$core$String$fromInt(head * 2),
-			$author$project$CreditCards$calcCheckSum(rest)) : _Utils_ap(
-			$elm$core$String$fromInt(head),
-			$author$project$CreditCards$calcCheckSum(rest));
-	}
-};
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $author$project$CreditCards$reverse = function (list) {
-	if (!list.b) {
-		return _List_Nil;
-	} else {
-		var x = list.a;
-		var xs = list.b;
-		return A2(
-			$elm$core$List$append,
-			$author$project$CreditCards$reverse(xs),
-			_List_fromArray(
-				[x]));
-	}
-};
-var $author$project$CreditCards$isValid = function (num) {
-	return !A2(
-		$elm$core$Basics$modBy,
-		10,
-		A3(
-			$elm$core$List$foldl,
-			$elm$core$Basics$add,
-			0,
-			$author$project$CreditCards$toIntList(
-				$author$project$CreditCards$calcCheckSum(
+var $author$project$Math$run = function (input) {
+	var p0 = A2(
+		$author$project$Math$Plus,
+		$author$project$Math$X,
+		$author$project$Math$Const(3));
+	var p1 = A2($author$project$Math$Poly, p0, 5);
+	var p2 = A2(
+		$author$project$Math$Mult,
+		A2(
+			$author$project$Math$Plus,
+			$author$project$Math$X,
+			$author$project$Math$Const(-2)),
+		p1);
+	var p3 = A2(
+		$author$project$Math$Plus,
+		A2(
+			$author$project$Math$Plus,
+			A2(
+				$author$project$Math$Minus,
+				p0,
+				A2(
+					$author$project$Math$Poly,
 					A2(
-						$elm$core$List$filter,
-						function (n) {
-							return n >= 0;
-						},
-						$author$project$CreditCards$reverse(
-							$author$project$CreditCards$toIntList(num)))))));
-};
-var $author$project$CreditCards$run = function (input) {
-	return $elm$core$String$isEmpty(input) ? 'Empty input' : ((!$author$project$CreditCards$isInputValid(input)) ? 'Bad input' : ($author$project$CreditCards$isValid(input) ? 'Correct' : 'Invalid'));
+						$author$project$Math$Plus,
+						$author$project$Math$X,
+						$author$project$Math$Const(5)),
+					7)),
+			A2(
+				$author$project$Math$Mult,
+				p0,
+				A2($author$project$Math$Div, p2, $author$project$Math$X))),
+		A2(
+			$author$project$Math$Mult,
+			A2($author$project$Math$Plus, $author$project$Math$X, $author$project$Math$X),
+			$author$project$Math$X));
+	return $elm$core$String$fromFloat(
+		A2($author$project$Math$eval, input, p3));
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
@@ -3086,7 +2956,7 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(
 			model,
 			$author$project$Main$put(
-				$author$project$CreditCards$run(input)));
+				$author$project$Math$run(input)));
 	});
 var $elm$core$Platform$worker = _Platform_worker;
 var $author$project$Main$main = $elm$core$Platform$worker(

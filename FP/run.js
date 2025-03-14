@@ -29,8 +29,12 @@ console.log(args);
 // 	c: parseInt(args[2]),
 // });
 
-// Credit cards
+// Credit cards, Merge
+// console.log("\n   Input: ", args[0]);
+// main.ports.get.send(args[0]);
+
+// Math
 console.log("\n   Input: ", args[0]);
-main.ports.get.send(args[0]);
+main.ports.get.send(parseFloat(args[0]));
 
 main.ports.put.subscribe((data) => console.log("   Output: " + JSON.stringify(data) + "\n"));

@@ -11,3 +11,5 @@ datasets
 elm-stuff
 node_modules
 target
+*.csv
+*.json

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Variance Graph</title>
+	</head>
+	<body>
+		<canvas id="varianceChart"></canvas>
+		<script type="module">
+			import {
+				Chart,
+				CategoryScale,
+				LinearScale,
+				BarElement,
+				Title,
+				Tooltip,
+				Legend,
+				BubbleController,
+				PointElement,
+				LineController,
+				LineElement,
+			} from "chart.js";
+
+			Chart.register(
+				CategoryScale,
+				LinearScale,
+				BarElement,
+				Title,
+				Tooltip,
+				Legend,
+				BubbleController,
+				PointElement,
+				LineController,
+				LineElement
+			);
+
+			const variable = new URLSearchParams(window.location.search).get("variable");
+			const json_data = await fetch("http://localhost:3000/data.json").then((response) => response.json());
+			const ctx = document.getElementById("varianceChart").getContext("2d");
+
+			const data = {};
+			for (const point of json_data.data) {
+				if (data[point[variable]]) {
+					data[point[variable]] += 1;
+				} else {
+					data[point[variable]] = 1;
+				}
+			}
+
+			const dataList = Object.entries(data).map(([val, count]) => {
+				return {
+					x: parseInt(val),
+					y: count,
+				};
+			});
+			dataList.sort((a, b) => a.x - b.x);
+
+			// Given data statistics
+			const mean = json_data[variable + "_mean"];
+			const standardDeviation = json_data[variable + "_standard_deviation"];
+
+			for (
+				let val = +json_data[variable + "_min"], i = 0;
+				i < json_data[variable + "_max"] - +json_data[variable + "_min"];
+				i++, val++
+			) {
+				if (dataList[i]?.x !== val) {
+					dataList.splice(i, 0, { x: val, y: 0 });
+				}
+			}
+
+			new Chart(ctx, {
+				type: "line",
+				data: {
+					labels: Array(dataList.length)
+						.fill(0)
+						.map((_, i) => i + 1),
+					datasets: [
+						{
+							label: "Data Points",
+							data: dataList,
+							borderColor: "blue",
+							backgroundColor: "rgba(0, 0, 255, 0.2)",
+							tension: 0.5,
+						},
+						// {
+						// 	label: "Mean",
+						// 	data: Array(json_data.count).fill(mean),
+						// 	borderColor: "red",
+						// 	borderDash: [5, 5],
+						// 	pointRadius: 0,
+						// },
+						// {
+						// 	label: "Mean + Std Dev",
+						// 	data: Array(json_data.count).fill(mean + standardDeviation),
+						// 	borderColor: "green",
+						// 	borderDash: [5, 5],
+						// 	pointRadius: 0,
+						// },
+						// {
+						// 	label: "Mean - Std Dev",
+						// 	data: Array(json_data.count).fill(mean - standardDeviation),
+						// 	borderColor: "green",
+						// 	borderDash: [5, 5],
+						// 	pointRadius: 0,
+						// },
+					],
+				},
+				options: {
+					responsive: true,
+					plugins: {
+						title: {
+							display: true,
+							text: "Variance Visualization",
+						},
+					},
+					scales: {
+						x: {
+							title: {
+								display: true,
+								text: "X Values",
+								beginAtZero: false,
+							},
+						},
+						y: {
+							title: {
+								display: true,
+								text: "Deviation",
+							},
+						},
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

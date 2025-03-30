@@ -1,6 +1,4 @@
 module Math exposing (..)
-import Main exposing (get)
-
 
 type Function
   = Poly  Function Int
@@ -33,8 +31,8 @@ eval x f =
     Div l r -> (eval x l) / (eval x r)
     Poly fx i -> (eval x fx) ^ (Basics.toFloat i)
 
-graph: Function -> Int -> Int -> Int -> Int -> String
-graph f a b c d =
+-- graph: Function -> Int -> Int -> Int -> Int -> String
+-- graph f a b c d =
   
 
 type alias InputType = Float
@@ -46,4 +44,4 @@ run input =
     p2 = Mult (Plus X (Const -2)) p1
     p3 = Plus (Plus (Minus p0 (Poly (Plus X (Const 5)) 7)) (Mult p0 (Div p2 X))) (Mult (Plus X X) X)
   in
-  graph p3
+    eval input p3 |> String.fromFloat

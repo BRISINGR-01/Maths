@@ -35,7 +35,7 @@
 				LineElement
 			);
 
-			const variable = new URLSearchParams(window.location.search).get("variable");
+			const variable = new URLSearchParams(window.location.search).get("variable") ?? "x";
 			const json_data = await fetch("http://localhost:3000/data.json").then((response) => response.json());
 			const ctx = document.getElementById("varianceChart").getContext("2d");
 
@@ -84,27 +84,6 @@
 							backgroundColor: "rgba(0, 0, 255, 0.2)",
 							tension: 0.5,
 						},
-						// {
-						// 	label: "Mean",
-						// 	data: Array(json_data.count).fill(mean),
-						// 	borderColor: "red",
-						// 	borderDash: [5, 5],
-						// 	pointRadius: 0,
-						// },
-						// {
-						// 	label: "Mean + Std Dev",
-						// 	data: Array(json_data.count).fill(mean + standardDeviation),
-						// 	borderColor: "green",
-						// 	borderDash: [5, 5],
-						// 	pointRadius: 0,
-						// },
-						// {
-						// 	label: "Mean - Std Dev",
-						// 	data: Array(json_data.count).fill(mean - standardDeviation),
-						// 	borderColor: "green",
-						// 	borderDash: [5, 5],
-						// 	pointRadius: 0,
-						// },
 					],
 				},
 				options: {

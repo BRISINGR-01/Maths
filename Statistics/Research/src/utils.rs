@@ -1,4 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    f32::INFINITY,
+};
 
 pub static DATA_FILE: &str = "./data/survey_results_public.csv";
 pub static SAMPLE_DATA_FILE: &str = "./data/sample_survey_results.csv";
@@ -33,14 +36,14 @@ fn size(x: &Vec<u32>) -> f64 {
     (x.len() - 1) as f64
 }
 
-pub fn mean(data: Vec<u32>) -> f64 {
+pub fn mean(data: &Vec<u32>) -> f64 {
     let sum: u32 = data.iter().sum();
     let len = data.len() as u32;
     (sum / len) as f64
 }
 
-pub fn median(data: Vec<u32>) -> f64 {
-    let mut data = data;
+pub fn median(data: &Vec<u32>) -> f64 {
+    let mut data = data.clone();
     data.sort();
     if data.len() % 2 == 0 {
         return (data[data.len() / 2] + data[data.len() / 2 - 1]) as f64 / 2.0;
@@ -49,24 +52,24 @@ pub fn median(data: Vec<u32>) -> f64 {
     }
 }
 
-pub fn mode(data: Vec<u32>) -> u32 {
+pub fn mode(data: &Vec<u32>) -> u32 {
     let mut map = HashMap::new();
     for el in data {
         let count = map.entry(el).or_insert(0);
         *count += 1;
     }
     let mut max = 0;
-    let mut mode = 0;
-    for (el, count) in map {
+    let mut m = 0;
+    for (&el, count) in map {
         if count > max {
             max = count;
-            mode = el;
+            m = el;
         }
     }
-    mode
+    m
 }
 
-pub fn regression_line(x: Vec<u32>, y: Vec<u32>) -> (f64, f64) {
+pub fn regression_line(x: &Vec<u32>, y: &Vec<u32>) -> (f64, f64) {
     let n = size(&x);
     let sum_x: u32 = x.iter().sum();
     let sum_y: u32 = y.iter().sum();
@@ -105,13 +108,13 @@ pub fn mae(x: &Vec<u32>, y: &Vec<u32>, slope: f64, intercept: f64) -> f64 {
 }
 
 pub fn coef_determination(x: &Vec<u32>, y: &Vec<u32>, slope: f64, intercept: f64) -> f64 {
-    let m = mean(y.clone());
+    let m = mean(y);
 
     1.0 - sse(x, y, slope, intercept) / y.iter().map(|y| (*y as f64 - m).powi(2)).sum::<f64>()
 }
 
 pub fn standard_deviation(x: &Vec<u32>) -> f64 {
-    let m = mean(x.clone());
+    let m = mean(x);
     (x.iter().map(|x| (*x as f64 - m).powi(2)).sum::<f64>() / size(x)).sqrt()
 }
 
@@ -163,6 +166,62 @@ pub fn outliers(x: &Vec<u32>) -> Vec<u32> {
         .into_iter()
         .copied()
         .collect()
+}
+
+pub fn spearman(x: &Vec<u32>, y: &Vec<u32>) -> f64 {
+    let n = size(x);
+    1 as f64 - (6 as f64 * spearman_d(x, y)) / (n * (n.powi(2) - 1 as f64))
+}
+
+fn spearman_d(x: &Vec<u32>, y: &Vec<u32>) -> f64 {
+    spearman_points(x, y)
+        .into_iter()
+        .map(|(dx, dy)| (dx - dy).powi(2) as f64)
+        .sum::<f64>()
+}
+
+pub fn spearman_z(x: &Vec<u32>, y: &Vec<u32>) -> f64 {
+    let n = size(x);
+    let d = spearman_d(x, y);
+    let e = (n.powi(3) - n.powi(2)) / 6 as f64;
+    let v = n.powi(2) * (n + 1 as f64).powi(2) * (n - 1 as f64).powi(2);
+
+    (d - e) / v.sqrt()
+}
+
+pub fn spearman_points(x: &Vec<u32>, y: &Vec<u32>) -> Vec<(f64, f64)> {
+    let n = x.len();
+
+    let mut sorted_x = x.clone();
+    sorted_x.sort();
+    let mut sorted_y = y.clone();
+    sorted_y.sort();
+
+    let dx = x
+        .iter()
+        .map(|&p| {
+            let i = sorted_x.iter().position(|&r| r == p).unwrap();
+            sorted_x[i] = INFINITY as u32;
+            i as f64
+        })
+        .collect::<Vec<f64>>();
+
+    let dy = y
+        .iter()
+        .map(|&p| {
+            let i = sorted_y.iter().position(|&r| r == p).unwrap();
+            sorted_y[i] = INFINITY as u32;
+            i as f64
+        })
+        .collect::<Vec<f64>>();
+
+    let mut vec = Vec::with_capacity(n);
+
+    for i in 0..n {
+        vec.push((dx[i], dy[i]));
+    }
+
+    vec
 }
 
 pub const HEADERS: [&'static str; 114] = [

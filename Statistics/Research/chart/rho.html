@@ -39,7 +39,7 @@
 			);
 
 			const ctx = document.getElementById("myChart").getContext("2d");
-			const { slope, inter, data } = await fetch("http://localhost:3000/data.json").then((response) => response.json());
+			const { rho_points: data } = await fetch("http://localhost:3000/data.json").then((response) => response.json());
 
 			// Step 1: Count occurrences of each (x, y) point
 			const pointMap = new Map();
@@ -57,38 +57,21 @@
 			});
 
 			new Chart(ctx, {
+				type: "scatter",
 				data: {
 					datasets: [
 						{
-							type: "scatter",
 							label: "Data Points",
 							data: processedData,
 							backgroundColor: "rgba(0, 0, 255, 0.5)",
 							borderColor: "black",
 						},
-						{
-							label: "Regression Line",
-							data: [
-								{
-									x: 0,
-									y: inter,
-								},
-								{
-									x: lastX,
-									y: lastX * slope + inter,
-								},
-							],
-							type: "line",
-							borderColor: "green",
-							borderWidth: 4,
-							fill: false,
-						},
 					],
 				},
-				options: {
-					scales: {
-						x: { title: { display: true, text: "Years of coding" }, position: "bottom" },
-						y: { title: { display: true, text: "Satisfaction of contribuiting to open source" }, beginAtZero: true },
+				scales: {
+					x: {
+						type: "linear",
+						position: "bottom",
 					},
 				},
 			});

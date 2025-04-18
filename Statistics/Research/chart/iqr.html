@@ -40,10 +40,8 @@
 				BoxAndWiskers
 			);
 
+			const variable = new URLSearchParams(window.location.search).get("variable") ?? "x";
 			const ctx = document.getElementById("iqrBoxPlot").getContext("2d");
-
-			const variable = new URLSearchParams(window.location.search).get("variable");
-
 			const json_data = await fetch("http://localhost:3000/data.json").then((response) => response.json());
 
 			const data = {

@@ -1,12 +1,13 @@
 use csv::{Reader, StringRecord, Writer};
-use json::object;
+use json::{array, object};
 use rand::prelude::*;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, vec};
 use utils::{
     coef_determination, iqr, mae, max, mean, median, min, mode, mse, outliers, q1, q3, range,
-    regression_line, rmse, sse, standard_deviation, Data, ReadyData, Row, DATA_FILE,
-    EXTRACTED_DATA_FILE, HEADERS, JSON_DATA_FILE, SAMPLE_DATA_FILE, SAMPLE_SIZE,
+    regression_line, rmse, spearman, spearman_points, spearman_z, sse, standard_deviation, Data,
+    ReadyData, Row, DATA_FILE, EXTRACTED_DATA_FILE, HEADERS, JSON_DATA_FILE, SAMPLE_DATA_FILE,
+    SAMPLE_SIZE,
 };
 
 mod utils;
@@ -152,76 +153,51 @@ fn save_data_as_json() {
         }
     };
 
-    let (slope, inter) = regression_line(
-        vec.iter().map(|d| d.x).collect(),
-        vec.iter().map(|d| d.y).collect(),
-    );
+    let x = &vec.iter().map(|d| d.x).collect();
+    let y = &vec.iter().map(|d| d.y).collect();
+
+    let (slope, inter) = regression_line(x, y);
 
     let mut json_data = json::JsonValue::new_object();
 
     json_data["slope"] = slope.into();
     json_data["inter"] = inter.into();
     json_data["count"] = vec.len().into();
-    json_data["sse"] = sse(
-        &vec.iter().map(|d| d.x).collect(),
-        &vec.iter().map(|d| d.y).collect(),
-        slope,
-        inter,
-    )
-    .into();
-    json_data["mse"] = mse(
-        &vec.iter().map(|d| d.x).collect(),
-        &vec.iter().map(|d| d.y).collect(),
-        slope,
-        inter,
-    )
-    .into();
-    json_data["rmse"] = rmse(
-        &vec.iter().map(|d| d.x).collect(),
-        &vec.iter().map(|d| d.y).collect(),
-        slope,
-        inter,
-    )
-    .into();
-    json_data["mae"] = mae(
-        &vec.iter().map(|d| d.x).collect(),
-        &vec.iter().map(|d| d.y).collect(),
-        slope,
-        inter,
-    )
-    .into();
-    json_data["r2"] = coef_determination(
-        &vec.iter().map(|d| d.x).collect(),
-        &vec.iter().map(|d| d.y).collect(),
-        slope,
-        inter,
-    )
-    .into();
+    json_data["sse"] = sse(x, y, slope, inter).into();
+    json_data["mse"] = mse(x, y, slope, inter).into();
+    json_data["rmse"] = rmse(x, y, slope, inter).into();
+    json_data["mae"] = mae(x, y, slope, inter).into();
+    json_data["r2"] = coef_determination(x, y, slope, inter).into();
+    json_data["rho"] = spearman(x, y).into();
+    json_data["rho_z"] = spearman_z(x, y).into();
+    json_data["rho_points"] = spearman_points(x, y)
+        .iter()
+        .map(|p| object! {x: p.0,y: p.1 })
+        .collect::<Vec<json::JsonValue>>()
+        .into();
 
-    json_data["x_standard_deviation"] =
-        standard_deviation(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_q1"] = q1(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_q3"] = q3(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_iqr"] = iqr(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_range"] = range(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_outliers"] = outliers(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_mean"] = mean(vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_median"] = median(vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_mode"] = mode(vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_min"] = min(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["x_max"] = max(&vec.iter().map(|d| d.x).collect()).into();
-    json_data["y_standard_deviation"] =
-        standard_deviation(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_q1"] = q1(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_q3"] = q3(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_iqr"] = iqr(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_range"] = range(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_outliers"] = outliers(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_mean"] = mean(vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_median"] = median(vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_mode"] = mode(vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_min"] = min(&vec.iter().map(|d| d.y).collect()).into();
-    json_data["y_max"] = max(&vec.iter().map(|d| d.y).collect()).into();
+    json_data["x_standard_deviation"] = standard_deviation(x).into();
+    json_data["x_q1"] = q1(x).into();
+    json_data["x_q3"] = q3(x).into();
+    json_data["x_iqr"] = iqr(x).into();
+    json_data["x_range"] = range(x).into();
+    json_data["x_outliers"] = outliers(x).into();
+    json_data["x_mean"] = mean(x).into();
+    json_data["x_median"] = median(x).into();
+    json_data["x_mode"] = mode(x).into();
+    json_data["x_min"] = min(x).into();
+    json_data["x_max"] = max(x).into();
+    json_data["y_standard_deviation"] = standard_deviation(y).into();
+    json_data["y_q1"] = q1(y).into();
+    json_data["y_q3"] = q3(y).into();
+    json_data["y_iqr"] = iqr(y).into();
+    json_data["y_range"] = range(y).into();
+    json_data["y_outliers"] = outliers(y).into();
+    json_data["y_mean"] = mean(y).into();
+    json_data["y_median"] = median(y).into();
+    json_data["y_mode"] = mode(y).into();
+    json_data["y_min"] = min(y).into();
+    json_data["y_max"] = max(y).into();
 
     let json_data_vec: Vec<json::JsonValue> = vec
         .iter()

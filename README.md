@@ -1,2 +1,3 @@
 # Maths
-Projects which are rather math related
+
+Projects from Academic Preparation at Fontys

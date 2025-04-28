@@ -1,0 +1,31 @@
+@startuml
+actor Student
+
+Student -> Barrier : wait() \nwait to enter
+Barrier -> Student : Release all students once they have gathered together
+Student -> Key : wait() \nwait to enter
+Student -> WashingMachine : wait() \nwait to start washing
+
+Student -> Student : decide_to_exit() (70% chance, if N - 1 > resting students)
+alt decides to exit
+    Key -> Student : signal() \nleaves laundromat and nr. of resting students increases
+    Student -> Key : wait() \nre-enters and nr. of resting students decreases
+end
+
+Student -> Student : wash()
+
+WashingMachine -> Student : signal() \ndone washing
+Student -> Dryer : wait() \nwait to start drying
+
+Student -> Student : decide_to_exit() (70% chance, if N - 1 > resting students)
+alt decides to exit
+    Key -> Student : signal() \nleaves laundromat and nr. of resting students increases
+    Student -> Key : wait() \nre-enters and nr. of resting students decreases
+end
+
+Student -> Student : dry()
+
+Dryer -> Student : signal() \ndone drying
+Key -> Student: signal() \nexits laundromat
+
+@enduml

@@ -84,8 +84,6 @@ def try_to_exit(name: str):
 
 student_n = 0
 def student_thread():
-    global people_resting, washing_machine_count, dryer_count
-
     name = get_name()
     print(name + " has started")
 

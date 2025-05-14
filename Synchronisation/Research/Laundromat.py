@@ -40,11 +40,6 @@ dryer = MySemaphore(dryer_count, "dryers")
 
 # ---------- Utils ----------
 
-def exit():
-    keys.signal()
-    print("Exiting laundromat")
-    keys.wait()
-
 def get_name():
     global student_n
 
@@ -73,7 +68,9 @@ def try_to_exit(name: str):
         mutex.signal()
 
         print(name + " exited the laundromat")
-        exit()
+        keys.signal()
+        print("Exiting laundromat")
+        keys.wait()
         print(name + " returned to the laundromat")
 
         mutex.wait()

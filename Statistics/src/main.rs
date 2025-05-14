@@ -1,5 +1,5 @@
 use csv::{Reader, StringRecord, Writer};
-use json::{array, object};
+use json::object;
 use rand::prelude::*;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, vec};

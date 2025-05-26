@@ -3,6 +3,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import pygame
 import numpy as np
+from envs.grid import Grid
 
 
 class Actions(Enum):
@@ -20,6 +21,11 @@ class GridWorldEnv(gym.Env):
     def __init__(self, render_mode=None, size=5):
         self.size = size
         self.window_size = 512
+        self.grid = Grid(size)
+        self.canvas = pygame.Surface((self.window_size + len(self.grid.tiles), self.window_size + len(self.grid.tiles)))
+        self.canvas.fill((0, 0, 0))
+        self.pix_square_size = self.window_size / self.size
+        
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2,
@@ -121,49 +127,35 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.Surface((self.window_size, self.window_size))
-        canvas.fill((255, 255, 255))
-        pix_square_size = (
-            self.window_size / self.size
-        )  # The size of a single grid square in pixels
+        for y, row in enumerate(self.grid.tiles):
+            for x, tile in enumerate(row):
+                scaled_sprite = pygame.transform.scale(tile.image, (self.pix_square_size, self.pix_square_size))
+                self.canvas.blit(scaled_sprite, (x * self.pix_square_size, y * self.pix_square_size))
 
-        # First we draw the target
+                if tile.is_on_fire:
+                    scaled_sprite = pygame.transform.scale(tile.image, (self.pix_square_size, self.pix_square_size))
+                    self.canvas.blit(scaled_sprite, (x * self.pix_square_size, y * self.pix_square_size))
+                    tile.increase_fire()
+
+            
         pygame.draw.rect(
-            canvas,
-            (255, 0, 0),
+            self.canvas,
+            (255, 233, 0),
             pygame.Rect(
-                pix_square_size * self._target_location,
-                (pix_square_size, pix_square_size),
+                self.pix_square_size * self._target_location,
+                (self.pix_square_size, self.pix_square_size),
             ),
         )
-        # Now we draw the agent
         pygame.draw.circle(
-            canvas,
+            self.canvas,
             (0, 0, 255),
-            (self._agent_location + 0.5) * pix_square_size,
-            pix_square_size / 3,
+            (self._agent_location + 0.5) * self.pix_square_size,
+            self.pix_square_size / 3,
         )
 
-        # Finally, add some gridlines
-        for x in range(self.size + 1):
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, pix_square_size * x),
-                (self.window_size, pix_square_size * x),
-                width=3,
-            )
-            pygame.draw.line(
-                canvas,
-                0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.window_size),
-                width=3,
-            )
-
         if self.render_mode == "human":
-            # The following line copies our drawings from `canvas` to the visible window
-            self.window.blit(canvas, canvas.get_rect())
+            # The following line copies our drawings from `self.canvas` to the visible window
+            self.window.blit(self.canvas, self.canvas.get_rect())
             pygame.event.pump()
             pygame.display.update()
 
@@ -171,9 +163,9 @@ class GridWorldEnv(gym.Env):
             # The following line will automatically add a delay to
             # keep the framerate stable.
             self.clock.tick(self.metadata["render_fps"])
-        else:  # rgb_array
+        else:
             return np.transpose(
-                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
+                np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2)
             )
 
     def close(self):

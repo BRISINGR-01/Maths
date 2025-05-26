@@ -17,12 +17,17 @@
           (ps: with ps; [ gymnasium pygame matplotlib numpy ]);
       in {
         devShells.default = pkgs.mkShell {
-          buildInputs =
-            [ pythonEnv pkgs.xorg.libX11 pkgs.xorg.xwayland pkgs.SDL2 ];
+          buildInputs = [
+            pythonEnv
+            pkgs.xorg.libX11
+            pkgs.SDL2
+            pkgs.python312Packages.pybox2d
+          ];
 
           shellHook = ''
-            export SDL_VIDEODRIVER=x11
-            echo "SDL_VIDEODRIVER set to x11 for Gym UI on Hyprland."
+            export SDL_VIDEODRIVER=wayland
+            echo "SDL_VIDEODRIVER set to way for Gym UI on Hyprland."
+            fish; exit
           '';
         };
       });

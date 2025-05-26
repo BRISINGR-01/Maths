@@ -1,7 +1,11 @@
+import pygame
+from sprites import sprite_map
+from envs.constants import FIRE_LAST_STEP
+
 class Tile:
   image = None
   is_on_fire = False
-  fire_state = 1
+  _fire_state = 1
   
   def __init__(self, is_traversable, can_burn):
     self.is_traversable = is_traversable
@@ -11,7 +15,23 @@ class Tile:
     self.image = image
   
   def increase_fire(self):
-    self.fire_state += 1
+    self._fire_state += 1
     
-    if self.fire_state == 5:
-      self.fire_state= 1
+    if self._fire_state > FIRE_LAST_STEP:
+      self._fire_state= 1
+  
+  def set_on_fire(self):
+    self.is_on_fire = True
+        
+  def put_out_fire(self):
+    self.is_on_fire = False
+    self._fire_state = 1
+  
+  def draw(self, canvas, square_size, x, y):
+    scaled_sprite = pygame.transform.scale(self.image, (square_size, square_size))
+    canvas.blit(scaled_sprite, (x * square_size, y * square_size))
+
+  def draw_fire(self, canvas, square_size, x, y):
+    scaled_sprite = pygame.transform.scale(sprite_map["fires"][self._fire_state - 1], (square_size, square_size))
+    canvas.blit(scaled_sprite, (x * square_size, y * square_size))
+    self.increase_fire()

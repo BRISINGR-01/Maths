@@ -4,16 +4,7 @@ from gymnasium import spaces
 import pygame
 import numpy as np
 from envs.grid import Grid
-
-
-class Actions(Enum):
-    right = 0
-    up = 1
-    left = 2
-    down = 3
-    pick_person = 4
-    break_door = 5
-
+from envs.constants import Action
 
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -22,7 +13,7 @@ class GridWorldEnv(gym.Env):
         self.size = size
         self.window_size = 512
         self.grid = Grid(size)
-        self.canvas = pygame.Surface((self.window_size + len(self.grid.tiles), self.window_size + len(self.grid.tiles)))
+        self.canvas = pygame.Surface((self.window_size , self.window_size ))
         self.canvas.fill((0, 0, 0))
         self.pix_square_size = self.window_size / self.size
         
@@ -37,19 +28,19 @@ class GridWorldEnv(gym.Env):
             }
         )
 
-        # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
+        # We have 4 action, corresponding to "right", "up", "left", "down", "right"
         self.action_space = spaces.Discrete(4)
 
         """
-        The following dictionary maps abstract actions from `self.action_space` to 
+        The following dictionary maps abstract action from `self.action_space` to 
         the direction we will walk in if that action is taken.
         i.e. 0 corresponds to "right", 1 to "up" etc.
         """
         self._action_to_direction = {
-            Actions.right.value: np.array([1, 0]),
-            Actions.up.value: np.array([0, 1]),
-            Actions.left.value: np.array([-1, 0]),
-            Actions.down.value: np.array([0, -1]),
+            Action.RIGHT.value: np.array([1, 0]),
+            Action.UP.value: np.array([0, 1]),
+            Action.LEFT.value: np.array([-1, 0]),
+            Action.DOWN.value: np.array([0, -1]),
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -127,16 +118,8 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        for y, row in enumerate(self.grid.tiles):
-            for x, tile in enumerate(row):
-                scaled_sprite = pygame.transform.scale(tile.image, (self.pix_square_size, self.pix_square_size))
-                self.canvas.blit(scaled_sprite, (x * self.pix_square_size, y * self.pix_square_size))
-
-                if tile.is_on_fire:
-                    scaled_sprite = pygame.transform.scale(tile.image, (self.pix_square_size, self.pix_square_size))
-                    self.canvas.blit(scaled_sprite, (x * self.pix_square_size, y * self.pix_square_size))
-                    tile.increase_fire()
-
+        self.grid.update()
+        self.grid.draw(self.canvas, self.pix_square_size)
             
         pygame.draw.rect(
             self.canvas,

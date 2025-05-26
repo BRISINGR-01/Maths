@@ -36,9 +36,11 @@ def load_fire_sprites():
     fires = []
     pygame.init()
     pygame.display.set_mode((1024, 1024))
-    for i in range(1, 4):
+    for i in range(1, 5):
         sheet = pygame.image.load("assets/Fogo_" + str(i) + ".png").convert_alpha()
-        frame = sheet.subsurface(pygame.Rect(100, 100, 100, 100)).copy()
+        piece = 1024 / 28
+        offset = piece * 16
+        frame = sheet.subsurface(pygame.Rect(offset, offset, piece * 4, piece * 4)).copy()
         fires.append(frame)
 
     pygame.quit()
@@ -92,7 +94,63 @@ def test_sprite(sprite):
 
     pygame.quit()    
 
-sprite_map = {}
+sprite_map = {
+    "fires": load_fire_sprites(),
+    "wall": {
+        "front": sprites[18][1],
+        "top": sprites[19][0],
+        "half": sprites[21][0],
+    },
+    "floor_tile": sprites[19][1],
+    "window": sprites[21][6],
+    "picture": sprites[21][7],
+    "bed": {
+        "red": sprites[23][0],
+        "blue": sprites[23][1],
+        "purple": sprites[23][2]
+    },
+    "bookshelf": {
+        "full": sprites[23][3],
+        "empty": sprites[23][4]
+    },
+    "trap-doo": {
+        "closed": sprites[22][0],
+        "open": sprites[22][1],
+    },
+    "door": {
+        "closed": sprites[22][2],
+        "open": sprites[22][3],
+    },
+    "stool": sprites[23][5],
+    "table": {
+        "small": sprites[23][6],
+        "big": sprites[23][7],
+    },
+    "radio": sprites[24][0],
+    "night-stand": sprites[24][1],
+    "toilet": sprites[24][2],
+    "pot": {
+        "empty": sprites[24][3],
+        "green": sprites[24][4],
+        "pink": sprites[24][5],
+        "red": sprites[24][6],
+    },
+    "chest": sprites[24][7],
+    "chair": {
+        "empty": sprites[25][0],
+        "red": sprites[25][1],
+        "blue": sprites[25][2],
+        "purple": sprites[25][3]
+    },
+    "bin": sprites[25][3],
+    "modern_bin": sprites[25][4],
+    "carpet": {
+        "up": sprites[26][1],
+        "middle": sprites[26][2],
+        "down": sprites[26][3]
+    },
+    "oven": sprites[26][4]
+}
 
 for color_i, color in enumerate(["red", "blue", "purple"]):
   map = {}
@@ -118,63 +176,7 @@ for color_i, color in enumerate(["red", "blue", "purple"]):
   
   sprite_map[color + "_carpet"] = map
 
-sprite_map["wall"] = {
-  "front": sprites[18][1],
-  "top": sprites[19][0],
-  "half": sprites[21][0],
-}
-sprite_map["floor_tile"] = sprites[19][1]
-sprite_map["window"] = sprites[21][6]
-sprite_map["picture"] = sprites[21][7]
-sprite_map["bed"] = {
-    "red": sprites[23][0],
-    "blue": sprites[23][1],
-    "purple": sprites[23][2]
-}
-sprite_map["bookshelf"] = {
-    "full": sprites[23][3],
-    "empty": sprites[23][4]
-}
-sprite_map["trap-door"] = {
-    "closed": sprites[22][0],
-    "open": sprites[22][1],
-}
-sprite_map["door"] = {
-    "closed": sprites[22][2],
-    "open": sprites[22][3],
-}
-sprite_map["stool"] = sprites[23][5]
-sprite_map["table"] = {
-    "small": sprites[23][6],
-    "big": sprites[23][7],
-}
-sprite_map["radio"] = sprites[24][0]
-sprite_map["night-stand"] = sprites[24][1]
-sprite_map["toilet"] = sprites[24][2]
-sprite_map["pot"] = {
-    "empty": sprites[24][3],
-    "green": sprites[24][4],
-    "pink": sprites[24][5],
-    "red": sprites[24][6],
-}
-sprite_map["chest"] = sprites[24][7]
-sprite_map["chair"] = {
-    "empty": sprites[25][0],
-    "red": sprites[25][1],
-    "blue": sprites[25][2],
-    "purple": sprites[25][3]
-}
-sprite_map["bin"] = sprites[25][3]
-sprite_map["modern_bin"] = sprites[25][4]
-sprite_map["carpet"] = {
-    "up": sprites[26][1],
-    "middle": sprites[26][2],
-    "down": sprites[26][3]
-}
-
-sprite_map["oven"] = sprites[26][4]
-
 
 if __name__ == "__main__":
     # test_sprite(sprite_map["chair"]["red"])
-    # display_sheet()
+    display_sheet()

@@ -1,57 +1,57 @@
-from envs.constants import FloorColor, Side
+from envs.constants import FloorType, Side
 from envs.tile import Tile
 import sprites
 
-def get_color(color: FloorColor):
-  if color == FloorColor.RED:
-    return "red"
-  elif color == FloorColor.BLUE:
-    return "blue"
-  elif color == FloorColor.PURPLE:
-    return "purple"
 
 def get_sprite_from_borders(sprite_map: dict, borders: list[Side]):
   if len(borders) == 0:
     return sprite_map["middle_center"]
 
-  category = []
+  categories = []
   
   if Side.TOP in borders:
-    category.append("top")
-  
+    categories.append("top")
   if Side.RIGHT in borders:
-    category.append("right")
-  
+    categories.append("right")
   if Side.BOTTOM in borders:
-    category.append("bottom")
-  
+    categories.append("bottom")
   if Side.LEFT in borders:
-    category.append("left")
+    categories.append("left")
     
-  if len(category) == 1:
-    if category[0] == "top" or category[0] == "bottom": 
-      category.append("center")
+  if len(categories) == 1:
+    if categories[0] == "top" or categories[0] == "bottom": 
+      return sprite_map[categories[0] + "_center"]["without_middle"]
     else:
-      category.insert(0, "middle")
+      return sprite_map["middle_" + categories[0]]["without_middle"]
       
-  category_name = "_".join(category)
+  category_name = "_".join(categories)
   
   if category_name not in sprite_map:
-    raise Exception(f"Floor with category {category_name} not found")
-  
-  return sprite_map[category_name]["without_middle"]
+    raise Exception(f"Floor with category '{category_name}' not found")
+
+  if len(categories) == 2:
+    return sprite_map[category_name]["without_middle"]
+
+  return sprite_map[category_name]
  
 
 class Floor(Tile):
-  def __init__(self, color: FloorColor, borders: list[Side] = []):
+  def __init__(self, type: FloorType, borders: list[Side] = []):
     super().__init__(True, True)
-    self.color = color
-    self.borders = borders
-    self.set_image()
     
-  def set_image(self):
-    sprites.sprites
+    if type == FloorType.TILE:
+      self.image = sprites.sprite_map["floor_tile"]
+      return
     
-    colored_sprites = sprites.sprite_map[get_color(self.color) + "_carpet"]
+    color = None
+    match type:
+      case FloorType.BLUE:
+        color = "blue"
+      case FloorType.RED:
+        color = "red"
+      case FloorType.PURPLE:
+        color = "purple"
+      case _:
+        raise Exception(f"Floor with type {type} not found")
     
-    return super().set_image(get_sprite_from_borders(colored_sprites, self.borders))
+    self.image = get_sprite_from_borders(sprites.sprite_map[color + "_carpet"], borders)

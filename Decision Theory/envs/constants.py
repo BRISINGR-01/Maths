@@ -1,11 +1,8 @@
 from enum import Enum
 
 PADDING = 2
-
-class FloorColor(Enum):
-  RED = 0
-  BLUE = 1
-  PURPLE = 2
+FIRE_LAST_STEP = 4
+DURABILITY_POWER = 5
 
 class Side(Enum):
   TOP = 0
@@ -54,6 +51,9 @@ class Items(Enum):
     BIN = 20
     MODERN_BIN = 21
     PICTURE = 22
+    POT_GREEN = 23
+    POT_PINK = 24
+    POT_RED = 25
 
 class Pots(Enum):
     EMPTY = 0
@@ -67,3 +67,13 @@ class Chairs(Enum):
     BLUE = 2
     PURPLE = 3
  
+ 
+class Action(Enum):
+    RIGHT = 0
+    UP = 1
+    LEFT = 2
+    DOWN = 3
+    PICK_PERSON = 4
+    BREAK_DOOR = 5
+    PUT_OUT_FIRE = 6
+    

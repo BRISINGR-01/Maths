@@ -1,5 +1,5 @@
 import pygame
-from sprites import sprite_map
+from envs.sprites import sprite_map
 from envs.constants import FIRE_LAST_STEP
 
 class Tile:
@@ -28,8 +28,12 @@ class Tile:
     self._fire_state = 1
   
   def draw(self, canvas, square_size, x, y):
-    scaled_sprite = pygame.transform.scale(self.image, (square_size, square_size))
+    scaled_sprite = pygame.transform.scale(self.image, (square_size +1, square_size ))
     canvas.blit(scaled_sprite, (x * square_size, y * square_size))
+    
+    if self.is_on_fire:
+      self.draw_fire(canvas, square_size, x, y)
+
 
   def draw_fire(self, canvas, square_size, x, y):
     scaled_sprite = pygame.transform.scale(sprite_map["fires"][self._fire_state - 1], (square_size, square_size))

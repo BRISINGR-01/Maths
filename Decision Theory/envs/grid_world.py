@@ -14,8 +14,8 @@ class GridWorldEnv(gym.Env):
         self.window_size = 512
         self.grid = Grid(size)
         self.canvas = pygame.Surface((self.window_size , self.window_size ))
-        self.canvas.fill((0, 0, 0))
-        self.pix_square_size = self.window_size / self.size
+        self.canvas.fill((255, 255, 255))
+        self.pix_square_size = int(self.window_size / self.size)
         
 
         # Observations are dictionaries with the agent's and the target's location.
@@ -131,7 +131,7 @@ class GridWorldEnv(gym.Env):
         )
         pygame.draw.circle(
             self.canvas,
-            (0, 0, 255),
+            (0, 250, 255),
             (self._agent_location + 0.5) * self.pix_square_size,
             self.pix_square_size / 3,
         )

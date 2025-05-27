@@ -1,7 +1,8 @@
-from envs.floor import Floor
-from envs.tile import Tile
-from envs.constants import Items, FIRE_LAST_STEP, DURABILITY_POWER
-from sprites import sprite_map
+import pygame
+from envs.tiles.floor import Floor
+from envs.tiles.tile import Tile
+from envs.constants import Items, FIRE_LAST_STEP, DURABILITY_POWER, FIRE_SIZE_ON_OBJECT
+from envs.sprites import sprite_map
 
 class Item(Tile):
   durability = 10
@@ -22,11 +23,14 @@ class Item(Tile):
         self.durability = 12
         self.image = sprite_map["bookshelf"]["empty"]
       case Items.BOOKSHELF_FULL:
-        self.durability = 14  # heavier and more solid
+        self.durability = 14
         self.image = sprite_map["bookshelf"]["full"]
       case Items.TABLE:
         self.durability = 10
-        self.image = sprite_map["table"]
+        self.image = sprite_map["table"]["big"]
+      case Items.TABLE_SMALL:
+        self.durability = 8
+        self.image = sprite_map["table"]["small"]
       case Items.CHAIR:
         self.durability = 6
         self.image = sprite_map["chair"]["empty"]
@@ -40,10 +44,10 @@ class Item(Tile):
         self.durability = 6
         self.image = sprite_map["chair"]["red"]
       case Items.OVEN:
-        self.durability = 18  # heavy and metallic
+        self.durability = 18
         self.image = sprite_map["oven"]
       case Items.TOILET:
-        self.durability = 15  # porcelain, sturdy but breakable
+        self.durability = 15
         self.image = sprite_map["toilet"]
       case Items.POT:
         self.durability = 5
@@ -63,20 +67,29 @@ class Item(Tile):
       case Items.STOOL:
         self.durability = 4
         self.image = sprite_map["stool"]
-      case Items.BED:
+      case Items.BED_BLUE:
         self.durability = 13
-        self.image = sprite_map["bed"]
+        self.image = sprite_map["bed"]["blue"]
+      case Items.BED_RED:
+        self.durability = 13
+        self.image = sprite_map["bed"]["red"]
+      case Items.BED_PURPLE:
+        self.durability = 13
+        self.image = sprite_map["bed"]["purple"]
       case Items.NIGHTSTAND:
         self.durability = 8
         self.image = sprite_map["nightstand"]
       case Items.DOOR:
-        self.durability = 20  # very durable
+        self.durability = 20
         self.image = sprite_map["door"]
+      case Items.DOOR_OPEN:
+        self.durability = 20
+        self.image = sprite_map["door_open"]
       case Items.TRAPDOOR:
         self.durability = 12
         self.image = sprite_map["trapdoor"]["closed"]
       case Items.TRAPDOOR_OPEN:
-        self.durability = 12  # same as closed state
+        self.durability = 12
         self.image = sprite_map["trapdoor"]["open"]
       case Items.BIN:
         self.durability = 7
@@ -89,6 +102,7 @@ class Item(Tile):
         self.is_destructable = False
 
     self.durability *= DURABILITY_POWER
+    self.is_door = type == Items.DOOR or type == Items.TRAPDOOR or type == Items.TRAPDOOR_OPEN or type == Items.DOOR_OPEN
     
   def damage(self):
     self.durability -= 1
@@ -114,3 +128,12 @@ class Item(Tile):
     
     if not self.is_destroyed:
       super().draw(canvas, square_size, x, y)
+
+  def draw_fire(self, canvas, square_size, x, y):
+    if self.is_destroyed:
+      return super().draw_fire(canvas, square_size, x, y)
+      
+    
+    scaled_sprite = pygame.transform.scale(sprite_map["fires"][self._fire_state - 1], (square_size * FIRE_SIZE_ON_OBJECT, square_size * FIRE_SIZE_ON_OBJECT))
+    canvas.blit(scaled_sprite, (x * square_size + square_size * (1 - FIRE_SIZE_ON_OBJECT) / 2, y * square_size + square_size * (1 - FIRE_SIZE_ON_OBJECT)))
+    self.increase_fire()

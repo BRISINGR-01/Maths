@@ -3,6 +3,7 @@ from enum import Enum
 PADDING = 2
 FIRE_LAST_STEP = 4
 DURABILITY_POWER = 5
+FIRE_SIZE_ON_OBJECT = 0.6
 
 class Side(Enum):
   TOP = 0
@@ -43,7 +44,7 @@ class Items(Enum):
     POT = 12
     CHEST = 13
     STOOL = 14
-    BED = 15
+    DOOR_OPEN = 15
     NIGHTSTAND = 16
     DOOR = 17
     TRAPDOOR = 18
@@ -54,6 +55,9 @@ class Items(Enum):
     POT_GREEN = 23
     POT_PINK = 24
     POT_RED = 25
+    BED_RED = 26
+    BED_BLUE = 27
+    BED_PURPLE = 28
 
 class Pots(Enum):
     EMPTY = 0

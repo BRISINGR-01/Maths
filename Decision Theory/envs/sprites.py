@@ -61,7 +61,7 @@ def display_sheet():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill((40, 40, 40))
+        screen.fill((255, 255, 255))
         tile_size = SPRITE_SIZE + PADDING # space between sprites (padding)
 
         for row in range(ROWS):
@@ -97,9 +97,9 @@ def test_sprite(sprite):
 sprite_map = {
     "fires": load_fire_sprites(),
     "wall": {
-        "front": sprites[18][1],
-        "top": sprites[19][0],
-        "half": sprites[21][0],
+        "front": sprites[20][3],
+        "top": sprites[19][3],
+        "half": sprites[21][3],
     },
     "floor_tile": sprites[19][1],
     "window": sprites[21][6],
@@ -156,6 +156,7 @@ for color_i, color in enumerate(["red", "blue", "purple"]):
   map = {}
   color_i *= 6
   
+  # order is top, bottom, right, left
   for row, side in enumerate(["top", "middle", "bottom"]):
     for col, direction in enumerate(["left", "center", "right"]):
       map[side + "_" + direction] = {
@@ -166,15 +167,23 @@ for color_i, color in enumerate(["red", "blue", "purple"]):
   
   map["top_right_left"] = sprites[color_i + 3][3]
   map["right_left"] = sprites[color_i + 4][3]
-  map["right_bottom_left"] = sprites[color_i + 5][3]
+  map["bottom_right_left"] = sprites[color_i + 5][3]
 
   map["top_bottom_left"] = sprites[color_i + 5][4]
   map["top_bottom"] = sprites[color_i + 5][5]
-  map["top_right_bottom"] = sprites[color_i + 5][6]
+  map["top_bottom_right"] = sprites[color_i + 5][6]
 
-  map["top_right_bottom_left"] = sprites[color_i + 5][7]
+  map["top_bottom_right_left"] = sprites[color_i + 5][7]
   
   sprite_map[color + "_carpet"] = map
+
+# fix top wall black strips
+w = sprite_map["wall"]["top"].get_width() - 1
+for y in range(sprite_map["wall"]["top"].get_height()):
+    sprite_map["wall"]["top"].set_at((0, y), sprite_map["wall"]["top"].get_at((1, y)))
+    sprite_map["wall"]["top"].set_at((w, y), sprite_map["wall"]["top"].get_at((w-1, y)))
+    sprite_map["wall"]["front"].set_at((0, y), sprite_map["wall"]["front"].get_at((1, y)))
+    sprite_map["wall"]["front"].set_at((w, y), sprite_map["wall"]["front"].get_at((w-1, y)))
 
 
 if __name__ == "__main__":

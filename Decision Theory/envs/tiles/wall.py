@@ -25,7 +25,6 @@ class Wall(Tile):
         return
       
       if decide_action(CHANCE_OF_WALL_BEING_WINDOW):
-        print("window")
         self.set_image(sprite_map["window"], size)
 
       

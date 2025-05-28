@@ -25,13 +25,10 @@ class Tile:
       raise Exception("Tile is not inflammable")
     
     self.is_on_fire = True
-    self._is_inherintelly_traversable = self.is_traversable
-    self.is_traversable = False
         
   def put_out_fire(self):
     self.is_on_fire = False
     self._fire_state = 1
-    self.is_traversable = self._is_inherintelly_traversable
   
   def draw(self, canvas, square_size, x, y):
     canvas.blit(self.image, (x * square_size, y * square_size))

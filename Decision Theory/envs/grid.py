@@ -1,8 +1,10 @@
-from envs.constants import FloorType
+import numpy as np
+from envs.constants import FloorType, CHANCE_OF_CATCHING_FIRE, CHANCE_OF_SELF_EXTINGUISH
 from envs.tiles.tile import Tile
 from envs.tiles.wall import Wall
 from envs.tiles.item import Item, Items
 from envs.tiles.floor import Floor, Side
+from envs.utilities import decide_action, random_tile
 
 def get_borders(tiles: list[list[Tile]], x, y):
   sides: list[Side] = []
@@ -19,34 +21,62 @@ def get_borders(tiles: list[list[Tile]], x, y):
   return sides
 
 class Grid:
-  def __init__(self, size):
+  def __init__(self, size, tile_size: int):
     self.size = size
-    self.create_grid()
+    self.create_grid(tile_size)
   
-  def create_grid(self):
+  def create_grid(self, tile_size: int):
     self.tiles: list[list[Tile]] = [[None for _ in range(self.size)] for _ in range(self.size)]
     
-    self.tiles[4][3] = Item(Items.TABLE, Floor(FloorType.BLUE, [Side.TOP, Side.RIGHT, Side.BOTTOM, Side.LEFT]))
-    self.tiles[4][3].is_on_fire = True
-    self.tiles[1][4] = Wall()
-    self.tiles[2][4] = Wall()
-    self.tiles[2][3] = Wall()
-    self.tiles[3][4] = Wall()
+    # First Walls
+    self.tiles[1][4] = Wall(tile_size)
+    self.tiles[2][4] = Wall(tile_size)
+    self.tiles[2][3] = Wall(tile_size)
+    self.tiles[3][4] = Wall(tile_size)
     
+    # Then Floors so they are aware of the walls
     for y in range(self.size):
       for x in range(self.size):
         if not self.tiles[y][x]:
-          self.tiles[y][x] = Floor(FloorType.BLUE, get_borders(self.tiles, x, y))
-        elif isinstance(self.tiles[y][x], Wall) and y < self.size - 1:
-          self.tiles[y][x].register_bottom_neighbor(self.tiles[y + 1][x])
-  
-    self.tiles[0][0].is_on_fire = True
+          self.tiles[y][x] = Floor(FloorType.BLUE, tile_size, get_borders(self.tiles, x, y))
+        elif isinstance(self.tiles[y][x], Wall):
+          self.tiles[y][x].register_neighbors(self.tiles, tile_size, x, y)
+
+    # Then Items so they sit on a ready floor
+    floor = self.random_empty_space()
+    self.tiles[floor["x"]][floor["y"]] = Item(Items.TABLE, floor["tile"], tile_size)
   
   def update(self):
-    pass
+    if decide_action(CHANCE_OF_CATCHING_FIRE):
+      tile = random_tile(self.tiles, inflammable=True)
+      if tile:
+        tile.set_on_fire()
+      
+    if decide_action(CHANCE_OF_SELF_EXTINGUISH):
+      tile = random_tile(self.tiles, burning=True)
+      if tile:
+        tile.put_out_fire()
 
   def draw(self, canvas, square_size):
     for y, row in enumerate(self.tiles):
       for x, tile in enumerate(row):
         tile.draw(canvas, square_size, x, y)
-        
+  
+  def random_empty_space(self):
+    possible_tiles = []
+    
+    for y in range(len(self.tiles)):
+      for x in range(len(self.tiles[0])):
+        if isinstance(self.tiles[y][x], Floor):
+          possible_tiles.append({
+            "tile": self.tiles[y][x],
+            "x": x,
+            "y": y
+          })
+    
+    if not possible_tiles:
+      return None
+    
+    i = np.random.randint(0, len(possible_tiles))
+
+    return possible_tiles[i]

@@ -2,7 +2,6 @@ from envs.constants import FloorType, Side
 from envs.tiles.tile import Tile
 import envs.sprites as sprites
 
-
 def get_sprite_from_borders(sprite_map: dict, borders: list[Side]):
   if len(borders) == 0:
     return sprite_map["middle_center"]["without_middle"]
@@ -34,13 +33,12 @@ def get_sprite_from_borders(sprite_map: dict, borders: list[Side]):
 
   return sprite_map[category_name]
  
-
 class Floor(Tile):
-  def __init__(self, type: FloorType, borders: list[Side] = []):
+  def __init__(self, type: FloorType, size: int, borders: list[Side] = []):
     super().__init__(True, True)
     
     if type == FloorType.TILE:
-      self.image = sprites.sprite_map["floor_tile"]
+      self.set_image(sprites.sprite_map["floor_tile"], size)
       return
     
     color = None
@@ -54,5 +52,5 @@ class Floor(Tile):
       case _:
         raise Exception(f"Floor with type {type} not found")
     
-    self.image = get_sprite_from_borders(sprites.sprite_map[color + "_carpet"], borders)
+    self.set_image(get_sprite_from_borders(sprites.sprite_map[color + "_carpet"], borders), size)
     

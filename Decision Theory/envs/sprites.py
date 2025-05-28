@@ -46,8 +46,6 @@ def load_fire_sprites():
     pygame.quit()
     return fires
     
-    
-    
 sprites = load_sprite_sheet("assets/4 BigSet.png", SPRITE_SIZE, SPRITE_SIZE)
 
 def display_sheet():
@@ -178,14 +176,18 @@ for color_i, color in enumerate(["red", "blue", "purple"]):
   sprite_map[color + "_carpet"] = map
 
 # fix top wall black strips
-w = sprite_map["wall"]["top"].get_width() - 1
+w = sprite_map["wall"]["top"].get_width()
 for y in range(sprite_map["wall"]["top"].get_height()):
     sprite_map["wall"]["top"].set_at((0, y), sprite_map["wall"]["top"].get_at((1, y)))
-    sprite_map["wall"]["top"].set_at((w, y), sprite_map["wall"]["top"].get_at((w-1, y)))
+    sprite_map["wall"]["top"].set_at((w-1, y), sprite_map["wall"]["top"].get_at((w-2, y)))
     sprite_map["wall"]["front"].set_at((0, y), sprite_map["wall"]["front"].get_at((1, y)))
-    sprite_map["wall"]["front"].set_at((w, y), sprite_map["wall"]["front"].get_at((w-1, y)))
+    sprite_map["wall"]["front"].set_at((w-1, y), sprite_map["wall"]["front"].get_at((w-2, y)))
 
+for x in range(w):
+    c = sprite_map["picture"].get_at((x, 1))
+    sprite_map["picture"].set_at((x, 0), c)
+    sprite_map["window"].set_at((x, 0), c)
 
 if __name__ == "__main__":
-    # test_sprite(sprite_map["chair"]["red"])
+    # test_sprite(sprite_map["window"])
     display_sheet()

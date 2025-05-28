@@ -1,25 +1,33 @@
 import pygame
 from envs.tiles.tile import Tile
 from envs.sprites import sprite_map
+from envs.constants import CHANCE_OF_WALL_BEING_WINDOW, CHANCE_OF_WALL_BEING_PICTURE
+from envs.utilities import decide_action
 
 class Wall(Tile):
-  def __init__(self):
+  def __init__(self, size: int):
     super().__init__(False, False)
-    self.set_image(sprite_map["wall"]["top"])
+    self.set_image(sprite_map["wall"]["top"], size)
   
-  def register_bottom_neighbor(self, neighbor):
-    if isinstance(neighbor, Wall):
-      self.set_image(sprite_map["wall"]["top"])
-    else:
-      self.set_image(sprite_map["wall"]["front"])
-  
-  def draw(self, canvas, square_size, x, y):
-    scaled_sprite = pygame.transform.scale(self.image, (square_size + 1, square_size + 1))
-    canvas.blit(scaled_sprite, (x * square_size, y * square_size))
-    
-    if self.is_on_fire:
-      self.draw_fire(canvas, square_size, x, y)
+  def register_neighbors(self, tiles: list[list[Tile]], size: int, x: int, y: int):
 
-  
+
+    if y < len(tiles) - 1 and isinstance(tiles[y + 1][x], Wall):
+      self.set_image(sprite_map["wall"]["top"], size)
+    else:
+      self.set_image(sprite_map["wall"]["front"], size)
+
+      if decide_action(CHANCE_OF_WALL_BEING_PICTURE):
+        self.set_image(sprite_map["picture"], size)
+        return
+
+      if y != 0 and isinstance(tiles[y - 1][x], Wall):
+        return
+      
+      if decide_action(CHANCE_OF_WALL_BEING_WINDOW):
+        print("window")
+        self.set_image(sprite_map["window"], size)
+
+      
   def set_on_fire(self):
-    pass
+    raise Exception("Wall is not inflammable")

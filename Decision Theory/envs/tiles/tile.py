@@ -7,12 +7,12 @@ class Tile:
   is_on_fire = False
   _fire_state = 1
   
-  def __init__(self, is_traversable, can_burn):
+  def __init__(self, is_traversable, inflammable):
     self.is_traversable = is_traversable
-    self.can_burn = can_burn
+    self.is_inflammable = inflammable
   
-  def set_image(self, image):
-    self.image = image
+  def set_image(self, image, size):
+    self.image = pygame.transform.scale(image, (size, size))
   
   def increase_fire(self):
     self._fire_state += 1
@@ -21,19 +21,23 @@ class Tile:
       self._fire_state= 1
   
   def set_on_fire(self):
+    if not self.is_inflammable:
+      raise Exception("Tile is not inflammable")
+    
     self.is_on_fire = True
+    self._is_inherintelly_traversable = self.is_traversable
+    self.is_traversable = False
         
   def put_out_fire(self):
     self.is_on_fire = False
     self._fire_state = 1
+    self.is_traversable = self._is_inherintelly_traversable
   
   def draw(self, canvas, square_size, x, y):
-    scaled_sprite = pygame.transform.scale(self.image, (square_size +1, square_size ))
-    canvas.blit(scaled_sprite, (x * square_size, y * square_size))
+    canvas.blit(self.image, (x * square_size, y * square_size))
     
     if self.is_on_fire:
       self.draw_fire(canvas, square_size, x, y)
-
 
   def draw_fire(self, canvas, square_size, x, y):
     scaled_sprite = pygame.transform.scale(sprite_map["fires"][self._fire_state - 1], (square_size, square_size))

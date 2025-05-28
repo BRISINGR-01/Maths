@@ -12,10 +12,10 @@ class GridWorldEnv(gym.Env):
     def __init__(self, render_mode=None, size=5):
         self.size = size
         self.window_size = 512
-        self.grid = Grid(size)
-        self.canvas = pygame.Surface((self.window_size , self.window_size ))
+        self.tile_size = int(self.window_size / self.size)
+        self.grid = Grid(size, self.tile_size)
+        self.canvas = pygame.Surface((self.window_size, self.window_size ))
         self.canvas.fill((255, 255, 255))
-        self.pix_square_size = int(self.window_size / self.size)
         
 
         # Observations are dictionaries with the agent's and the target's location.
@@ -119,21 +119,21 @@ class GridWorldEnv(gym.Env):
             self.clock = pygame.time.Clock()
 
         self.grid.update()
-        self.grid.draw(self.canvas, self.pix_square_size)
+        self.grid.draw(self.canvas, self.tile_size)
             
         pygame.draw.rect(
             self.canvas,
             (255, 233, 0),
             pygame.Rect(
-                self.pix_square_size * self._target_location,
-                (self.pix_square_size, self.pix_square_size),
+                self.tile_size * self._target_location,
+                (self.tile_size, self.tile_size),
             ),
         )
         pygame.draw.circle(
             self.canvas,
             (0, 250, 255),
-            (self._agent_location + 0.5) * self.pix_square_size,
-            self.pix_square_size / 3,
+            (self._agent_location + 0.5) * self.tile_size,
+            self.tile_size / 3,
         )
 
         if self.render_mode == "human":

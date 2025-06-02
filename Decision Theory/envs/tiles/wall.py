@@ -11,7 +11,6 @@ class Wall(Tile):
   
   def register_neighbors(self, tiles: list[list[Tile]], size: int, x: int, y: int):
 
-
     if y < len(tiles) - 1 and isinstance(tiles[y + 1][x], Wall):
       self.set_image(sprite_map["wall"]["top"], size)
     else:

@@ -1,18 +1,20 @@
-
 import gymnasium as gym
-from envs.grid_world import GridWorldEnv
-import gymnasium.envs.registration
+from utilities import create_env 
+from q_learning.agent import Agent
 
+n_episodes = 100_000
+start_epsilon = 1.0
 
-gymnasium.envs.registration.register(
-    id="GridWorld-v0",
-    entry_point="envs:GridWorldEnv",
+env = create_env(render=True)
+agent = Agent(
+    env=env,
+    learning_rate=0.01,
+    initial_epsilon=start_epsilon,
+    epsilon_decay=start_epsilon / (n_episodes / 2), # reduce the exploration over time
+    final_epsilon=0.1,
 )
 
 def run():
-    env = gym.make('GridWorld-v0', size=5, render_mode="human")
-    env.reset(seed=42)
-
     for _ in range(1000):
         # this is where you would insert your policy
         action = env.action_space.sample()

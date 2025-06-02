@@ -33,6 +33,7 @@ class Grid:
     self.tiles[2][4] = Wall(tile_size)
     self.tiles[2][3] = Wall(tile_size)
     self.tiles[3][4] = Wall(tile_size)
+    self.tiles[1][3] = Wall(tile_size)
     
     # Then Floors so they are aware of the walls
     for y in range(self.size):
@@ -80,3 +81,5 @@ class Grid:
     i = np.random.randint(0, len(possible_tiles))
 
     return possible_tiles[i]
+
+    

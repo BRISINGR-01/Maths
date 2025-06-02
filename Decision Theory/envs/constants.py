@@ -3,7 +3,7 @@ from enum import Enum
 DURABILITY_POWER = 5
 FIRE_LAST_STEP = 4
 FIRE_SIZE_ON_OBJECT = 0.6
-CHANCE_OF_CATCHING_FIRE = 0.4
+CHANCE_OF_CATCHING_FIRE = 0.1
 CHANCE_OF_SELF_EXTINGUISH = 0.004
 CHANCE_OF_WALL_BEING_WINDOW = 0.1
 CHANCE_OF_WALL_BEING_PICTURE = 0.1
@@ -62,19 +62,7 @@ class Items(Enum):
     BED_BLUE = 27
     BED_PURPLE = 28
 
-class Pots(Enum):
-    EMPTY = 0
-    GREEN = 1
-    PINK = 2
-    RED = 3
 
-class Chairs(Enum):
-    EMPTY = 0
-    RED = 1
-    BLUE = 2
-    PURPLE = 3
- 
- 
 class Action(Enum):
     RIGHT = 0
     UP = 1

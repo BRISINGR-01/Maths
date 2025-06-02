@@ -6,7 +6,7 @@ import numpy as np
 from envs.grid import Grid
 from envs.constants import Action
 
-class GridWorldEnv(gym.Env):
+class FireFighterWorld(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode=None, size=5):
@@ -16,7 +16,6 @@ class GridWorldEnv(gym.Env):
         self.grid = Grid(size, self.tile_size)
         self.canvas = pygame.Surface((self.window_size, self.window_size ))
         self.canvas.fill((255, 255, 255))
-        
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2,
@@ -82,6 +81,8 @@ class GridWorldEnv(gym.Env):
 
         observation = self._get_obs()
         info = self._get_info()
+        
+        self.grid.create_grid(self.tile_size)
 
         if self.render_mode == "human":
             self._render_frame()
@@ -89,6 +90,8 @@ class GridWorldEnv(gym.Env):
         return observation, info
 
     def step(self, action):
+        self.grid.update()
+
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
@@ -119,7 +122,6 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        self.grid.update()
         self.grid.draw(self.canvas, self.tile_size)
             
         pygame.draw.rect(

@@ -1,160 +1,124 @@
-from enum import Enum
 import gymnasium as gym
 from gymnasium import spaces
-import pygame
 import numpy as np
 from envs.grid import Grid
-from envs.constants import Action
+from envs.constants import Action, config
+from envs.ui.window import Window
+from envs.ui.training_room import TrainingRoom
+
 
 class FireFighterWorld(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": config.fps}
 
-    def __init__(self, render_mode=None, size=5):
-        self.size = size
-        self.window_size = 512
-        self.tile_size = int(self.window_size / self.size)
-        self.grid = Grid(size, self.tile_size)
-        self.canvas = pygame.Surface((self.window_size, self.window_size ))
-        self.canvas.fill((255, 255, 255))
+    def __init__(self, static_mode=False, render_mode=None):
+        self.grid = None  # Will be initialized in reset
+        self.static_mode = static_mode
 
-        # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`}^2,
-        # i.e. MultiDiscrete([size, size]).
-        self.observation_space = spaces.Dict(
-            {
-                "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-                "target": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-            }
+        self.observation_space = spaces.Tuple(
+            (
+                spaces.Box(0, config.grid_size - 1, shape=(2,), dtype=int),  # agent
+                spaces.Box(0, config.grid_size - 1, shape=(2,), dtype=int),  # target
+                spaces.Discrete(2),  # is_fire_present
+            )
         )
 
-        # We have 4 action, corresponding to "right", "up", "left", "down", "right"
-        self.action_space = spaces.Discrete(4)
-
-        """
-        The following dictionary maps abstract action from `self.action_space` to 
-        the direction we will walk in if that action is taken.
-        i.e. 0 corresponds to "right", 1 to "up" etc.
-        """
-        self._action_to_direction = {
-            Action.RIGHT.value: np.array([1, 0]),
-            Action.UP.value: np.array([0, 1]),
-            Action.LEFT.value: np.array([-1, 0]),
-            Action.DOWN.value: np.array([0, -1]),
-        }
+        self.action_space = spaces.Discrete(len(Action))
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
 
-        """
-        If human-rendering is used, `self.window` will be a reference
-        to the window that we draw to. `self.clock` will be a clock that is used
-        to ensure that the environment is rendered at the correct framerate in
-        human-mode. They will remain `None` until human-mode is used for the
-        first time.
-        """
-        self.window = None
-        self.clock = None
+        self.window = Window() if self.render_mode == "human" else None
 
     def _get_obs(self):
-        return {"agent": self._agent_location, "target": self._target_location}
+        return (
+            self.grid.agent.location,
+            self.grid.target.location,
+            self.grid.tiles[3][2].is_on_fire,
+        )
 
-    def _get_info(self):
+    def _get_info(self, is_legal_move=True):
         return {
+            "is_legal_move": is_legal_move,
+            "is_agent_dead": self.grid.is_agent_dead(),
             "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=1
-            )
+                self.grid.agent.location - self.grid.target.location
+            ),
         }
 
     def reset(self, seed=None, options=None):
-        super().reset(seed=seed) # to seed self.np_random
+        super().reset(seed=seed)
 
-        # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
+        # options can now include 'initial_agent_pos' and 'initial_target_pos' for MDP
+        initial_agent_pos = None
+        initial_target_pos = None
+        if options and "initial_agent_pos" in options:
+            initial_agent_pos = options["initial_agent_pos"]
+        if options and "initial_target_pos" in options:
+            initial_target_pos = options["initial_target_pos"]
 
-        # We will sample the target's location randomly until it does not
-        # coincide with the agent's location
-        self._target_location = self._agent_location
-        while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(
-                0, self.size, size=2, dtype=int
-            )
-
-        observation = self._get_obs()
-        info = self._get_info()
-        
-        self.grid.create_grid(self.tile_size)
+        # Re-create grid with specified initial positions if in static mode for MDP
+        self.grid = Grid(
+            TrainingRoom(),
+            self.static_mode,
+            initial_agent_pos,
+            initial_target_pos,
+            self.np_random,
+        )
 
         if self.render_mode == "human":
             self._render_frame()
 
-        return observation, info
+        return self._get_obs(), self._get_info()
 
     def step(self, action):
-        self.grid.update()
+        is_legal_move = self.grid.update(list(Action)[action])
 
-        # Map the action (element of {0,1,2,3}) to the direction we walk in
-        direction = self._action_to_direction[action]
-        # We use `np.clip` to make sure we don't leave the grid
-        self._agent_location = np.clip(
-            self._agent_location + direction, 0, self.size - 1
+        reward = config.time_step_punishment + config.distance_reward * (
+            config.max_distance
+            - np.linalg.norm(self.grid.agent.location - self.grid.target.location)
         )
-        # An episode is done if the agent has reached the target
 
-        terminated = self.grid.tiles[self._agent_location[1]][self._agent_location[0]].is_on_fire or np.array_equal(self._agent_location, self._target_location)
-        reward = 1 if terminated else 0  # Binary sparse rewards
-        observation = self._get_obs()
-        info = self._get_info()
+        terminated = False
+
+        if not is_legal_move:
+            reward += config.illeagal_move_punishment
+        elif self.grid.is_agent_dead():
+            terminated = True
+            reward += config.death_punishment
+        elif self.grid.is_cat_rescued():
+            terminated = True
+            reward += config.evacuation_success_reward
+        elif action == Action.PUT_OUT_FIRE.value:
+            reward += config.fire_extinguished_reward
 
         if self.render_mode == "human":
             self._render_frame()
 
-        return observation, reward, terminated, False, info
+        return (
+            self._get_obs(),
+            max(min(reward, config.max_reward), config.min_reward),  # clip reward
+            terminated,
+            False,
+            self._get_info(is_legal_move),
+        )
 
     def render(self):
-        if self.render_mode == "rgb_array":
-            return self._render_frame()
+        if self.render_mode != "human":
+            return
+
+        # Ensure animation completes if agent dies
+        if self.grid.is_agent_dead():
+            while self.grid.agent._anim_state != 0:
+                self._render_frame()
+        else:
+            self._render_frame()
 
     def _render_frame(self):
-        if self.window is None and self.render_mode == "human":
-            pygame.init()
-            pygame.display.init()
-            self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and self.render_mode == "human":
-            self.clock = pygame.time.Clock()
-
-        self.grid.draw(self.canvas, self.tile_size)
-            
-        pygame.draw.rect(
-            self.canvas,
-            (255, 233, 0),
-            pygame.Rect(
-                self.tile_size * self._target_location,
-                (self.tile_size, self.tile_size),
-            ),
+        self.window.draw(
+            lambda canvas: self.grid.draw(canvas),
+            lambda: self.grid.animate(),
         )
-        pygame.draw.circle(
-            self.canvas,
-            (0, 250, 255),
-            (self._agent_location + 0.5) * self.tile_size,
-            self.tile_size / 3,
-        )
-
-        if self.render_mode == "human":
-            # The following line copies our drawings from `self.canvas` to the visible window
-            self.window.blit(self.canvas, self.canvas.get_rect())
-            pygame.event.pump()
-            pygame.display.update()
-
-            # We need to ensure that human-rendering occurs at the predefined framerate.
-            # The following line will automatically add a delay to
-            # keep the framerate stable.
-            self.clock.tick(self.metadata["render_fps"])
-        else:
-            return np.transpose(
-                np.array(pygame.surfarray.pixels3d(self.canvas)), axes=(1, 0, 2)
-            )
 
     def close(self):
         if self.window is not None:
-            pygame.display.quit()
-            pygame.quit()
+            self.window.close()

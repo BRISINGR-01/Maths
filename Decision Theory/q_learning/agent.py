@@ -1,70 +1,88 @@
-from collections import defaultdict
-import gymnasium as gym
+from envs.utilities import decide_random_action
+import os
 import numpy as np
+from envs.constants import Action, Observation, config
+from q_learning.debug import Visualizer
 
-class Agent:
-    def __init__(
-        self,
-        env: gym.Env,
-        learning_rate: float,
-        initial_epsilon: float,
-        epsilon_decay: float,
-        final_epsilon: float,
-        discount_factor: float = 0.95,
-    ):
-        """Initialize a Reinforcement Learning agent with an empty dictionary
-        of state-action values (q_values), a learning rate and an epsilon.
+from q_learning.constants import (
+    DISCOUNT_FACTOR,
+    SAVE_Q_TABLE,
+    LEARNING_RATE,
+    EPSILON_DECAY,
+    FINAL_EPSILON,
+    INITIAL_EPSILON,
+    FILE_NAME,
+    DEBUG,
+)
 
-        Args:
-            env: The training environment
-            learning_rate: The learning rate
-            initial_epsilon: The initial epsilon value
-            epsilon_decay: The decay for epsilon
-            final_epsilon: The final epsilon value
-            discount_factor: The discount factor for computing the Q-value
-        """
-        self.env = env
-        self.q_values = defaultdict(lambda: np.zeros(env.action_space.n))
 
-        self.lr = learning_rate
-        self.discount_factor = discount_factor
+visualizer = Visualizer(
+    grid_shape=(config.grid_size, config.grid_size), num_actions=len(Action)
+)
 
-        self.epsilon = initial_epsilon
-        self.epsilon_decay = epsilon_decay
-        self.final_epsilon = final_epsilon
 
-        self.training_error = []
+def get_values(q_table, observation):
+    return q_table[observation[1][0]][observation[1][1]][1 if observation[2] else 0][
+        observation[0][0]
+    ][observation[0][1]]
 
-    def get_action(self, obs: tuple[int, int, bool]) -> int:
+
+class QLearningAgent:
+    epsilon = INITIAL_EPSILON
+
+    def __init__(self, seed=None):
+        if not SAVE_Q_TABLE and os.path.exists(FILE_NAME):
+            print("Loading Q-table from file...")
+            self.q_table = np.load(FILE_NAME)
+        else:
+            self.q_table = np.zeros(
+                [
+                    config.grid_size,
+                    config.grid_size,
+                    2,
+                    config.grid_size,
+                    config.grid_size,
+                    len(Action),
+                ]
+            )
+            # target_x, target_y, is_fire_present, agent_x, agent_y, action = 12960
+
+    def get_action(self, actions: list[Action], observation: Observation) -> int:
         """
         Returns the best action with probability (1 - epsilon)
         otherwise a random action with probability epsilon to ensure exploration.
         """
-        # with probability epsilon return a random action to explore the environment
-        if np.random.random() < self.epsilon:
-            return self.env.action_space.sample()
-        # with probability (1 - epsilon) act greedily (exploit)
+        if np.random.uniform(0, 1) < self.epsilon:
+            return decide_random_action(get_values(self.q_table, observation))
         else:
-            return int(np.argmax(self.q_values[obs]))
+            return np.argmax(get_values(self.q_table, observation))
 
     def update(
         self,
-        obs: tuple[int, int, bool],
+        obs: Observation,
         action: int,
         reward: float,
         terminated: bool,
-        next_obs: tuple[int, int, bool],
+        next_obs: Observation,
     ):
-        """Updates the Q-value of an action."""
-        future_q_value = (not terminated) * np.max(self.q_values[next_obs])
-        temporal_difference = (
-            reward + self.discount_factor * future_q_value - self.q_values[obs][action]
+        q_value = get_values(self.q_table, obs)[action]
+        future_q_value = np.max(get_values(self.q_table, next_obs))
+
+        temporal_difference = reward + DISCOUNT_FACTOR * future_q_value - q_value
+
+        get_values(self.q_table, obs)[action] = max(
+            min(q_value + LEARNING_RATE * temporal_difference, config.max_reward),
+            config.min_reward,
         )
 
-        self.q_values[obs][action] = (
-            self.q_values[obs][action] + self.lr * temporal_difference
-        )
-        self.training_error.append(temporal_difference)
+        if DEBUG:
+            visualizer.update(
+                self.q_table, self.epsilon, temporal_difference, obs[1], obs[2]
+            )
 
     def decay_epsilon(self):
-        self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
+        self.epsilon = max(FINAL_EPSILON, self.epsilon - EPSILON_DECAY)
+
+    def save(self):
+        if SAVE_Q_TABLE:
+            np.save(FILE_NAME, self.q_table)

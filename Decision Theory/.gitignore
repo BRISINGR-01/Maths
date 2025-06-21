@@ -6,7 +6,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+q_table.npy
+mdp/**
+metrics
+game
+data.json
 # C extensions
 *.so
 

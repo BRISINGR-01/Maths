@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@sgratzl/chartjs-chart-boxplot": "^4.4.4",
+    "chart.js": "^4.4.8",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "vite": "^6.2.3"
+  },
+  "scripts": {
+    "dev": "vite & node server.js"
+  }
+}

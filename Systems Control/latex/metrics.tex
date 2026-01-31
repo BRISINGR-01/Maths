@@ -1,0 +1,17 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+
+\subsection{Quantifiable control performance metrics}
+In order to compare the two approaches - LQR and PID, and their overall optimization quality, we will use specific measurable criteria that determine how well the system behaves after a disturbance in terms of reaching a steady state.
+
+\begin{enumerate}
+  \item \textbf{Stability} - The ability of the system to return to its equilibrium state after a disturbance. \cite{ogata}
+  \item \textbf{Settling time} - The time needed for the system to settle within a certain percentage of its final value.\cite{ogata}
+  \item \textbf{Overshoot} - The maximum amount by which the system's response exceeds its final value.\cite{ogata}
+  \item \textbf{Control effort} - The actuator demand required to stabilize the system, quantified in terms of coil current. \cite{ctrlefrt}
+  \item \textbf{RMS current} - captures the average intensity of controller operation during simulation. \cite{rmspeak}
+  \item \textbf{Peak current} - captures the highest possible current load during operation \cite{rmspeak}
+\end{enumerate}
+
+
+\end{document}

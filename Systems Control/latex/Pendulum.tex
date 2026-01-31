@@ -1,0 +1,60 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}  
+\subsection{Pendulum Dynamics}
+
+\subsubsection{Inverted Pendulum Model}
+One of the major components of the designed system is an inverted pendulum. The pendulum consists of a rod with an attached metal ball. The rod is assumed to be rigid and of fixed length \textit{l}, which imposes a holonomic constraint on the system \cite{tatum}. As a result, the distance between the pivot point and the mass remains constant what restricts the motion of the pendulum to one dimension. Therefore, the system with one degree of freedom can be described by the angular position of the pendulum.
+
+The angular deviation of the pendulum is denoted by $\phi$(t) and measured with respect to the vertical direction. Due to the holonomic constraint, the position of the pendulum mass can be determined by this angular coordinate.
+
+\subsubsection{State Variables}
+
+Since the pendulum dynamics is determined by a second-order differential equation, the system is represented in state-space form using the following state variables
+
+\begin{equation}
+x_1=\phi \quad \text{(angular position)}
+\end{equation}
+
+\begin{equation}
+x_2=\dot\phi \quad \text{(angular velocity)}
+\end{equation}
+
+These two variables and provide the minimal set of states required to fully describe the system’s motion.
+
+\subsubsection{Dynamics and Equation of Motion}
+
+The motion of the pendulum is influenced by gravity. The gravitational force acting on the mass can be decomposed into radial and tangential components relative to the circular trajectory \cite{gravforce}. Due to the rigid rod, radial motion is prohibited by the holonomic constraint. Due to that, the radial component of the force is balanced by the reaction force of the rod. Therefore, only the tangential component of gravity contributes to the pendulum’s motion.
+
+The tangential gravitational force is given by
+\begin{equation}
+    F_t = m  g sin \phi
+\end{equation}
+
+Applying Newton’s second law along the tangential direction yields
+\begin{equation}
+    F_t = ma_t
+\end{equation}
+
+where the tangential acceleration for circular motion is related to the angular acceleration by
+
+\begin{equation}
+    a_t=\textit{l}  \ddot\phi
+\end{equation}
+
+Substituting these expressions leads to the nonlinear equation of motion
+\begin{equation}
+    \ddot\phi = \frac{g}{\textit{l}}sin\phi
+\end{equation}
+
+\subsection{State-Space Model}
+Using the defined state variables, the nonlinear dynamics of the inverted pendulum can be expressed in state-space form as
+\begin{equation}
+    \dot x_1 = x_2
+\end{equation}
+\begin{equation}
+    \dot x_2 = \frac{g}{\textit{l}}sin(x_1)
+\end{equation}
+
+This nonlinear state-space model serves as the basis for further extension with an electromagnetic actuator.
+\end{document}     

@@ -1,0 +1,32 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\subsection{Output Definition}
+Following the linearization, the inverted pendulum system is described by linear state-space model
+\begin{equation}
+    \dot x = Ax + Bu, x = 
+    \begin{bmatrix} 
+    \phi \\
+    \dot \phi\\
+    i
+    \end{bmatrix}
+\end{equation}
+The output equation should be based on available measurements. In this project, the pendulum angle is measured at the pivot point. Therefore, the system output is specified as 
+\begin{equation}
+    y = \phi
+\end{equation}
+Since the output corresponds directly to the first state variable, the linear output equation can be written as
+\begin{equation}
+    y= Cx, C = 
+    \begin{matrix}
+        [1&0&0]
+    \end{matrix}
+\end{equation}
+The direct feedthrough matrix D is set to zero, since the measured output does not depend directly on the control input. The complete linear state-space representation of the system is therefore given by
+\begin{equation}
+\left\{ \begin{aligned} 
+ \dot x&= Ax + Bx\\
+  y &= Cx
+  \end{aligned} \right.
+\end{equation}
+The defined output is used as the feedback signal for the PID controller and for performance evaluation in the LQR-based control scheme.
+\end{document}

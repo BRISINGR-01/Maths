@@ -1,0 +1,23 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document} 
+\subsection{System Stability}
+
+The control voltage $u$ indirectly affects the output angle $\phi$, which makes the system weakly coupled and causes divergence when applying control strategies. This can be further checked with the system poles. From the linearized system equation, we get the state and model:
+$$x = [\phi, \dot\phi, i]$$
+$$\ddot\phi = \frac{g}{l}\phi + \frac{2ki_0}{mld^2}i$$
+$$\dot{i} = -\frac{R}{L_c}i + \frac{u}{L_c}$$
+After we apply the Laplace transformation, we can derive a transfer function:
+
+$$s^2\Phi(s) = \frac{g}{l}\Phi(s) + \frac{2ki_0}{mld^2}I(s)
+sI(s) = 
+$$
+
+$$sI(s) = \frac{R}{L_c}I(s) + \frac{U(s)}{L_c}$$
+$$G(s) = \frac{\Phi(s)}{U(s)} = \frac{\frac{2ki_0}{mld^2L_c}}{(s^2-\frac{g}{l})(s+\frac{R}{L_c})}$$
+resulting in poles: $$s_1 = -\frac{R}{L_c} = -200
+$$
+$$s_{2/3} = \pm \sqrt{\frac{g}{l}}  \approx  \pm 5.72$$
+Poles $s_1$ and $s_2$ are stable, but $s_3$ introduces instability, because it has a positive real part. Because $\frac{g}{l}$ can never be an imaginary number, this open-loop linearized system can not achieve stability, regardless of the parameters. Therefore, the design of control is essential to stabilize the system. 
+
+\end{document} 

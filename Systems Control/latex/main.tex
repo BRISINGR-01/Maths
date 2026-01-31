@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfiles}
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc}
+\usepackage{graphicx}
+\usepackage[backend=biber]{biblatex}
+\graphicspath{ {./images/} }
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath} % for 'aligned' env.
+\usepackage{matlab-prettifier}
+\usepackage{cleveref}
+
+\crefname{figure}{Figure}{Figures}
+\Crefname{figure}{Figure}{Figures}
+
+\addbibresource{references.bib} 
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+
+    \vspace*{7cm}
+
+    {\LARGE\bfseries Stability Control of a Ferromagnetic Pendulum via Electromagnetic Actuation\par}
+
+    \vspace{1.5cm}
+
+    {\large A. Popov (2404982)\par}
+    {\large A. Seleznev (2237318)\par}
+
+    \vfill
+
+    {\large Linear systems, Signals and Control\par}
+    {\large Eindhoven University of Technology\par}
+    {\large \today\par}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\subfile{Introduction}
+\subfile{Problem Specification}
+\subfile{EvalCriteria}
+\subfile{Setup}
+\subfile{Approach}
+\subfile{Results}
+\subfile{Conclusions}
+
+\clearpage
+
+\nocite{tatum}
+\nocite{gravforce}
+\nocite{ems}
+\nocite{newton2}
+\nocite{rlcirc}
+\nocite{linearization}
+\nocite{caspid}
+
+% PID
+\nocite{CTMS_PID_UMich}
+\nocite{sse}
+\nocite{MicrocontrollersLab_PID_Simulink} 
+\nocite{Control_Systems}
+\nocite{Ziegler1942OptimumSF}
+\nocite{pid-tuning}
+\nocite{pid-tuning-methods}
+
+% LQR
+\nocite{eureka}
+\nocite{lewis}
+\nocite{yt-are}
+\nocite{yt-lqr}
+
+\printbibliography 
+
+\end{document}

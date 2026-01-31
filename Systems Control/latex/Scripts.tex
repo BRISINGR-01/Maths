@@ -1,0 +1,67 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+\section{Simulation framework}
+
+The simulation framework consists of a set of MATLAB scripts and Simulink models used for controller design, system simulation, performance evaluation, and further visualization. To ensure reproducibility of results, a particular sequence of actions is specified further along with description of scripts, models and visualization of results.
+
+\subsection{Scripts}
+
+Considering MATLAB code, there are three main files: 
+
+The \texttt{upd\_cascaded\_PID.m} script implements the cascaded PID controller. It defines the system parameters, derives the linearized model, and specifies the gains for the inner and outer loops. The script also contains numerical simulation routines based on the ODE solver to validate the controller behavior prior to Simulink implementation. Furthermore, PID performance metrics are output to the console, and the system response is visualized in a plot. 
+
+The \texttt{upd\_LQR.m} script implements LQR controller. It defines the state-space matrices of the system and computes the optimal state-feedback gain. The closed-loop stability is verified through eigenvalue analysis and time-domain simulations, performed using an ODE solver to obtain performance metrics. Similar to previously described script, \texttt{upd\_LQR.m} also provides a console output with performance matrix and a plot visualizing system response.
+
+Finally, \texttt{upd\_compare\_controllers.m} script loads results of both PID and LQR MATLAB simulations and provides a visual comparison of both control designs in terms of control effort, response time and energy-related performance indicators.
+
+To ensure correct replication of simulation results, \texttt{upd\_cascaded\_PID.m} and \texttt{upd\_LQR.m} should be ran prior to \texttt{upd\_compare\_controllers.m}. The latter script relies on values received from each controller individual simulation. 
+
+\subsubsection{Miscellaneous scripts}
+
+During initial stage of the project realization, \texttt{Pendulum\_nonlinear.m}, \texttt{linearized\_pendulum.m}, \texttt{single\_loop\_PID.m} scripts simulating system's nonlinear, linearized non-actuated and single-loop PID behavior were developed as a step preceding the control design. These scripts provide an overview of the earlier steps in our approach. These scripts are also attached to the project report.
+
+\subsection{Simulink}
+
+The first model \texttt{PID\_simulink.slx} represents a block diagram of the cascaded PID architecture proposed earlier in MATLAB script. The model contains the inner current control and outer angle control loops. The plant dynamics is represented using state-space block. 
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/Sim_PID.png}
+    \caption{Simulink block diagram for PID}
+    \label{fig:Sim_PID}
+\end{figure}
+
+The second model \texttt{LQR\_simulink.slx} represents a block diagram of the LQR architecture as a full state-feedback system. The same plant model is reused as for PID under identical conditions what allows a direct unbiased comparison between controllers.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/Sim_LQR.png}
+    \caption{Simulink block diagram for LQR}
+    \label{fig:Sim_LQR}
+\end{figure}
+
+Each model should be ran after the corresponding MATLAB script to generate the required values in the workspace. Both Simulink models are attached to this report. 
+
+\subsection{Visualization 2D}
+
+Simulink outputs simulated values into the workspace for further post-processing and visualization. Afterwards, \texttt{PID\_animation.m} and \texttt{LQR\_animation.m} scripts load simulation output variables from the workspace. Based on these inputs, these scripts generate 2D graphics of the inverted pendulum with an actuator above it. Furthermore, the UI contains a button adding disturbance, which demonstrates controller's robustness. 
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/animation.png}
+    \caption{2D animation of controller behavior}
+    \label{fig:animation}
+\end{figure}
+
+\subsection{Visualization 3D}
+
+A second visualization \ref{fig:3D} was created outside MATLAB as a \href{https://systems-control.vercel.app/}{web app}. It is made using JavaScript, so the MATLAB native functions were not available. Furthermore, the environment was strictly digital and more restrained in terms of computational resources, unlike MATLAB, which attempts to replicate an analog signal. For this purpose, the Runge–Kutta method known as RK4 was applied to account for the difference in the environment. It was required since both models behaved erratically when put exactly as in MATLAB. So far, only the LQR method has been successfully stabilized. A detailed explanation of the development and issues of this system is out of scope for this document.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/3D_vis.png}
+    \caption{3D Visualization for LQR}
+    \label{fig:3D}
+\end{figure}
+\end{document}

@@ -1,0 +1,16 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\section{Evaluation Criteria}
+The project's success is evaluated based on objective and quantitative criteria that assess both the stability and performance of the controlled system. Firstly, closed-loop stability is required for all implemented controllers, ensuring that the inverted pendulum can be stabilized around its upright equilibrium point.
+
+Secondly, the performance of the transient response is evaluated using metrics in the time-domain such as the settle time and the overshoot. These parameters indicate how quickly and smoothly the system stabilizes around the desired equilibrium.
+
+Thirdly, the required control effort is assessed using quantitative measures that include the maximum current, the root-mean-square (RMS) current, and the integrated squared current. These metrics provide insight into actuator energy efficiency.
+
+Finally, controller performance is compared under the same model and initial conditions to ensure a fair and consistent evaluation. The project is considered successful if the implemented controllers stabilize the system and allow a quantitative comparison based on specified criteria. 
+
+\subfile{metrics}
+
+\end{document}
+
+

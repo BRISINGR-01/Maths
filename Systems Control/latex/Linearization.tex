@@ -1,0 +1,97 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\subsection{System Linearization}
+
+The nonlinear state-space model derived for the electromagnetically actuated inverted pendulum accurately represents the physical behavior of the system. However, the presence of nonlinear terms causes the system dynamics to depend on the operating (equilibrium) point, which makes the standard linear control design techniques inapplicable.
+
+In this project, the objective is to stabilize the pendulum in the upright position, where only small deviations from the equilibrium are expected. Linearization provides a local approximation of the system dynamics around a specified equilibrium point, resulting in a linear time-invariant model with constant parameters. This linear representation is essential for controller design, particularly for the state vector control in the LQR controller and for the tuning and analysis of the classical PID controller.
+
+\subsubsection{Equilibrium point}
+The nonlinear system can be written as the output of two inputs 
+\begin{equation}
+    \dot x = f(x,u)
+\end{equation}
+An equilibrium point ($\bar x, \bar y )$ is defined as a constant state with input pair derivatives equal to zero
+\begin{equation}
+    f(\bar x, \bar y) = 0
+\end{equation}
+
+As the goal is to stabilize the pendulum at an upright position, the equilibrium point should be 
+
+\begin{equation}
+    \bar x = 
+    \begin{bmatrix}
+    0\\
+    0\\
+    i_0
+\end{bmatrix}
+\end{equation}
+
+where the first state represents the pendulum angle, the second - angular velocity, and $i_0$ denotes the steady-state coil current of the magnetic actuator. The corresponding steady-state control input voltage is given by
+\begin{equation}
+    \bar u = R i_0
+\end{equation}
+where R represents the magnet coil resistance. That ensures that the coil current remains constant at the equilibrium point. 
+
+\subsubsection{Linearization about the Equilibrium Point}
+To analyze the system behavior near the operating point, the nonlinear function $f(x,u)$ is expanded in a first-order Taylor series about $(\bar x, \bar u)$ \cite{linearization}
+\begin{equation}
+    \dot x \approx f(\bar x, \bar u) + \left.\frac{\partial f}{\partial x}\right|_{\bar x,\bar u} (x-\bar x) + \left.\frac{\partial f}{\partial u}\right|_{\bar x,\bar u} (u-\bar u)
+\end{equation}
+Since $f(\bar x, \bar u) =0$ at equilibrium, the linearized system becomes 
+\begin{equation}
+    \dot x = A(x-\bar x) + B(u - \bar u)
+\end{equation}
+with system matrices defined as 
+\begin{equation}
+    A = \left.\frac{\partial f}{\partial x}\right|_{\bar x,\bar u}, B = \left.\frac{\partial f}{\partial u}\right|_{\bar x,\bar u}
+\end{equation}
+In this linearized form, the model describes the dynamics of the system around a specified operating point. 
+
+\subsubsection{Computing Linearized System Matrices}
+In the previous section, the following nonlinear state equations were derived 
+    \begin{equation}
+    \dot x_1 = x_2
+\end{equation}
+\begin{equation}
+    \dot x_2 = \frac{g}{\textit{l}}sin(x_1) +\frac{k}{m\textit{l}}\frac{x_3^2}{d^2}
+\end{equation}
+\begin{equation}
+    \dot x_3 = - \frac{R}{L_c}x_3 + \frac{1}{L_c}u
+\end{equation}
+The elements of the state matrix A are determined by computing partial derivatives of each state equation with respect to state variables and evaluating them at the operating point $\bar x$.
+
+Differentiating the first equation gives 
+\begin{equation}
+    \frac{\partial \dot x_1}{\partial x} = [\begin{matrix} 0&1&0\end{matrix}]
+\end{equation}
+From the second equation,
+\begin{equation}
+    \left.\frac{\partial \dot x_2}{\partial x_1}=\frac{g}{l}*cos(x_1)\right|_{x_1=0}=\frac{g}{l}, \frac{\partial \dot x_2}{\partial x_2}=0, \frac{\partial \dot x_2}{\partial x_3}=\frac{2ki_0}{mld^2}
+\end{equation}
+The third state equation result in 
+\begin{equation}
+    \frac{\partial \dot x_3}{\partial x} = [\begin{matrix}
+        0 & 0 & -\frac{R}{L_c}
+    \end{matrix}]
+\end{equation}
+Hence, the resulting linearized state matrix A is 
+\begin{equation}
+    A = \begin{bmatrix}
+        0 & 1 & 0\\
+        \frac{g}{l} & 0 & \frac{2ki_0}{mld^2}\\
+        0 & 0 & -\frac{R}{L_c}
+    \end{bmatrix}
+\end{equation}
+Similarly, the input matrix B is obtained through partial differentiation with respect to the control input
+\begin{equation}
+B =
+\begin{bmatrix}
+    0 \\
+    0\\
+    \frac{1}{L_c}
+\end{bmatrix}
+\end{equation}
+
+The resulting linear time-invariant (LTI) model describes the local dynamics of the system around the specified equilibrium point. It captures the behavior of small deviations in angle, angular velocity, and coil current. This linearized model is a basis for further controller design. 
+\end{document}

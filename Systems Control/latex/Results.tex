@@ -1,0 +1,44 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\section{Results and analysis}
+
+This section presents a comparative evaluation of the PID and LQR controllers designed for the linearized electromagnetic inverted pendulum. Both controllers were assessed using identical system models, initial conditions, and performance indicators to ensure objective comparison.
+
+\subsection{Transient Response}
+\cref{fig:pid-lqr-comparison} illustrates the time-domain response of the pendulum angle for both controllers. The first two sections display the comparison of the angle and torque, respectively. The PID controller shows a faster reduction of the initial angular deviation, reaching the equilibrium point faster than the  LQR controller. This behavior is reflected in the shorter settling time achieved by the PID controller.
+
+In contrast, the LQR controller demonstrates a smoother transient response with a smoother reduction of angular deviation. Although the settling time is longer, the response remains well-damped. Both controllers demonstrate negligible overshoot, indicating stable and non-oscillatory dynamics.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{images/pid-lqr-comparison.png}
+    \caption{Controllers Comparison}
+    \label{fig:pid-lqr-comparison}
+\end{figure}
+
+\subsection{Control Effort}
+The required control effort in terms of the coil current is shown in the third graph in \cref{fig:pid-lqr-comparison}. A considerable difference between the two controllers can be observed. The PID controller applies a large initial current to rapidly counteract the disturbance of the pendulum, which results in a high peak current and higher average current levels throughout the transient phase.
+
+In contrast, the LQR controller significantly reduces the magnitude of the applied current. The control action remains smooth and bounded, with peak current values smaller than those of the PID controller. This behavior reflects the optimization-based nature of the LQR approach, which balances state regulation against control effort.
+
+\subsection{Quantitative Performance Metrics}
+\cref{fig:perfmatrix} summarizes the quantitative performance metrics for both controllers. Based on this table, the PID controller has a shorter settling time, indicating faster stabilization. However, this advantage comes at the cost of substantially higher parameters related to current consumption. 
+
+Although the LQR controller is slower in terms of settling time, it demonstrates superior performance with respect to control efficiency. The reduced peak and average current values indicate lower actuator stress and improved energy efficiency.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{images/perf_mat_upd.png}
+    \caption{Performance comparison}
+    \label{fig:perfmatrix}
+\end{figure}
+
+\subsection{Analysis}
+
+The comparison of PID and LQR controllers indicates a trade-off between response time and required control effort. The PID controller stabilizes the system faster than the LQR. However, it requires more substantial control effort. This results in shorter settling time, along with large peak current and poor energy-related performance metrics. 
+
+In contrast, the LQR controller demonstrates considerably smoother response while requiring much less control input. Based on the nature of this type of controller, it limits the applied current to avoid excessive energy consumption. As a result, the system stabilizes around the equilibrium more slowly, but with significantly lower load on actuator. 
+
+Overall, the results indicate that neither controller could be named as a more favorable option to use. Faster stabilization provided by a PID controller could be applicable in systems where the response time is critical while applied current limitations are not. On the contrary, the LQR controller could be used in systems where energy efficiency and durability are the main focus. However, it comes at the cost of a slower transient response. 
+
+\end{document}

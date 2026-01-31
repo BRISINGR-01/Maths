@@ -1,0 +1,43 @@
+\documentclass[main.tex]{subfiles}
+\begin{document}
+\subsection{Open-loop System Behavior}
+
+In this section, the open-loop behavior of the electromagnetically actuated inverted pendulum is analyzed using continuous-time models. Both the nonlinear model and its linearized approximation are considered in order to gain insight into the dynamic properties of the system prior to controller design.
+
+
+All simulations are performed in continuous time. This is motivated by the physical nature of the system, whose mechanical and electrical dynamics are inherently continuous and naturally described by differential equations. The objective is to analyze system stability rather than to address issues related to digital implementation. Therefore, discretization is intentionally omitted.
+
+\subsubsection{Open-loop Response of Nonlinear Model}
+
+The nonlinear state-space model in \cref{fig:nonlinresponse} describes the full system dynamics, including the nonlinear coupling between the pendulum angle and the electromagnetic actuator. The model is simulated in open-loop configuration with zero input voltage applied to the actuator. A small initial angular deviation from the upright equilibrium is introduced.
+
+The simulation results show that the pendulum does not return to the upright position. Instead, the angular deviation grows over time, indicating that the upright equilibrium is inherently unstable. This behavior is observed even for small initial disturbances, confirming that passive stabilization is not possible and that active control is required.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Nonlinear_model.png}
+    \caption{Nonlinear Open-loop Response}
+    \label{fig:nonlinresponse}
+\end{figure}
+
+\subsubsection{Open-loop Response of Linearized Model}
+
+To facilitate controller design, the nonlinear model is linearized around the upright equilibrium under the assumption of small angular deviations and zero steady-state current. The resulting linearized state-space model in \cref{fig:linresponse} provides a local approximation of the system dynamics.
+
+The open-loop response of the linearized model is simulated using the same initial conditions as in the nonlinear. The results are consistent with instability of the nonlinear model, as the system states indicate the exponential growth. 
+
+The linearization does not change the fundamental stability properties of the system. Instead, it provides a simplified approximation that captures the local dynamics near the equilibrium point, suitable for applying linear control design techniques.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Linearized_model.png}
+    \caption{Linearized Open-loop Response}
+    \label{fig:linresponse}
+\end{figure}
+
+\subsubsection{Implications for the Project}
+Both analyzed nonlinear and linear continuous-time models demonstrated unstable open-loop behavior around the upright equilibrium. In comparison with nonlinear model, which describes the full system dynamics, the linearized model represents the local behavior in the vicinity of the equilibrium point. 
+
+The consistency between the two models behavior justifies the use of the linearized representation for subsequent controller design. At the same time, the observed instability motivates the need for feedback control, which is addressed in the following sections.
+
+\end{document}
